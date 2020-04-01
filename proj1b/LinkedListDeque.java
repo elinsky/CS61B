@@ -1,4 +1,4 @@
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Deque<T>{
     private class DLList<Stuff> {
         private class ItemNode {
             private ItemNode prev;
@@ -126,11 +126,6 @@ public class LinkedListDeque<T> {
     /** Adds an item of type T to the back of the deque. */
     public void addLast(T item) {
         queue.addLast(item);
-    }
-
-    /** Returns true if deque is empty, false otherwise. */
-    public boolean isEmpty() {
-        return size() == 0;
     }
 
     /** Returns the number of items in the deque. */

@@ -1,4 +1,4 @@
-/*
+package examples;/*
  *
  * Make sure to see the more detailed description of
  * StdDraw at: http://introcs.cs.princeton.edu/java/15inout/

@@ -2,7 +2,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /** Tests the LinkedListDeque class. */
-public class LLDTests {
+public class LinkedListDequeTests {
     /** Tests the LinkedListDeque.isEmpty method. */
     @Test
     public void testIsEmpty() {

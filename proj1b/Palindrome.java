@@ -8,14 +8,14 @@ public class Palindrome {
     }
 
     public boolean isPalindrome(String word) {
-         Deque<Character> wordDeque = wordToDeque(word);
-         int size = wordDeque.size();
-         for (int i = 0; i < size / 2; i++) {
-             if (wordDeque.removeFirst() != wordDeque.removeLast()) {
-                 return false;
-             }
-         }
-         return true;
+        Deque<Character> wordDeque = wordToDeque(word);
+        int size = wordDeque.size();
+        for (int i = 0; i < size / 2; i++) {
+            if (wordDeque.removeFirst() != wordDeque.removeLast()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** This method will return true if the word is a palindrome according to

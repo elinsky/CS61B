@@ -25,7 +25,7 @@ public class SampleCreature extends Creature {
     /**
      * red color.
      */
-    private int r = 155;
+    private int r = 0;
     /**
      * green color.
      */
@@ -33,7 +33,7 @@ public class SampleCreature extends Creature {
     /**
      * blue color.
      */
-    private int b = 76;
+    private int b = 0;
     /**
      * probability of taking a move when ample space available.
      */
@@ -41,7 +41,7 @@ public class SampleCreature extends Creature {
     /**
      * degree of color shift to allow.
      */
-    private int colorShift = 5;
+    private int colorShift = 9;
     /**
      * fraction of energy to retain when replicating.
      */

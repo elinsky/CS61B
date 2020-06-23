@@ -66,6 +66,24 @@ public class BST<Key extends Comparable<Key>> {
         return getRandomNode(root).key;
     }
 
+    /** Returns the average depth of the BST. */
+    public double getAverageDepth() {
+        if (size() == 0) {
+            return 0;
+        }
+        return (double) getSumOfDepthsHelper(root, 0) / (double) size();
+    }
+
+    private int getSumOfDepthsHelper(Node n, int accum) {
+        if (n == null) {
+            return 0;
+        } else if (n.left == null & n.right == null) {
+            return accum;
+        } else {
+            return accum + getSumOfDepthsHelper(n.left, accum + 1) + getSumOfDepthsHelper(n.right, accum + 1);
+        }
+    }
+
 
     /** Private methods and variables follow. There's no need to read
      *  any of this.
@@ -245,5 +263,8 @@ public class BST<Key extends Comparable<Key>> {
      */
     private boolean isEmpty() {
         return size() == 0;
+    }
+
+    public static void main(String[] args) {
     }
 }

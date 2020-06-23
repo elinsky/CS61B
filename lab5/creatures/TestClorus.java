@@ -88,6 +88,7 @@ public class TestClorus {
         Action expected = new Action(Action.ActionType.MOVE, Direction.LEFT);
         assertEquals(act.type, expected.type);
     }
+
     @Test
     public void testChooseActionReplicate() {
         HashMap<Direction, Occupant> neighbors = new HashMap<Direction, Occupant>();

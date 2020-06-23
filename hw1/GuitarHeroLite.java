@@ -1,4 +1,5 @@
-/** A client that uses the synthesizer package to replicate a plucked guitar string sound */
+import edu.princeton.cs.algs4.StdAudio;
+import edu.princeton.cs.algs4.StdDraw;
 import es.datastructur.synthesizer.GuitarString;
 
 public class GuitarHeroLite {

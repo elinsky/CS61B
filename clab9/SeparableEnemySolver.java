@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.HashMap;
+
 
 public class SeparableEnemySolver {
 
@@ -23,8 +25,48 @@ public class SeparableEnemySolver {
      * Returns true if input is separable, false otherwise.
      */
     public boolean isSeparable() {
-        // TODO: Fix me
-        return false;
+        Cycle cycle = new Cycle(g);
+        return !cycle.hasCycle();
+    }
+
+    private static class Cycle {
+        boolean hasCycle;
+        boolean hasOddCycle;
+        Graph g;
+        HashMap<String, Boolean> marked;
+
+        public Cycle(Graph graph) {
+            this.g = graph;
+            hasCycle = false;
+            hasOddCycle = false;
+            marked = new HashMap<String, Boolean>();
+            for (String node : g.labels()) {
+                marked.put(node, false);
+            }
+            for (String node : g.labels()) {
+                if (!marked.get(node)) {
+                    DFS(g, "null", node, 1);
+                }
+            }
+        }
+
+        private void DFS(Graph g, String from, String at, int depth) {
+            marked.put(at, true);
+            for (String neighbor : g.neighbors(at)) {
+                if (!marked.get(neighbor)) {
+                    DFS(g, at, neighbor, depth + 1);
+                } else if (!from.equals(neighbor)) {
+                    hasCycle = true;
+                    if (depth % 2 == 1 & depth > 1) {
+                        hasOddCycle = true;
+                    }
+                }
+            }
+        }
+
+        public boolean hasCycle() {
+            return hasOddCycle;
+        }
     }
 
 

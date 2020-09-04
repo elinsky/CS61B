@@ -8,7 +8,7 @@ public class KDTree implements PointSet {
     public KDTree(List<Point> points) {
 
         for (Point point : points) {
-            root = insert(root, new Node(point, null, null), true);
+            root = insert(root, point, true);
         }
     }
 
@@ -27,8 +27,7 @@ public class KDTree implements PointSet {
         if (Point.distance(n.p, goal) < Point.distance(best.p, goal)) { // if current node is better than the best
             best = n;
         }
-        Node goodSide = new Node(null, null, null);
-        Node badSide = new Node(null, null, null);
+        Node goodSide, badSide;
         if (leftRight) {
             if (goal.getX() < n.p.getX()) { // if the goal is to the left
                 goodSide = n.leftDown;
@@ -64,11 +63,11 @@ public class KDTree implements PointSet {
         return unexploredDistance <= bestDistance;
     }
 
-    private Node insert(Node tree, Node toInsert, boolean leftRight) {
+    private Node insert(Node tree, Point toInsert, boolean leftRight) {
         if (tree == null) {
-            return toInsert;
+            return new Node(toInsert, null, null);
         } else if (leftRight) {
-            if (toInsert.p.getX() < tree.p.getX()) {
+            if (toInsert.getX() < tree.p.getX()) {
                 tree.leftDown = insert(tree.leftDown, toInsert, !leftRight);
                 return tree;
             } else { // Ties go to the right
@@ -76,7 +75,7 @@ public class KDTree implements PointSet {
                 return tree;
             }
         } else {
-            if (toInsert.p.getY() < tree.p.getY()) {
+            if (toInsert.getY() < tree.p.getY()) {
                 tree.leftDown = insert(tree.leftDown, toInsert, !leftRight);
             } else { // Ties go up
                 tree.rightUp = insert(tree.rightUp, toInsert, !leftRight);

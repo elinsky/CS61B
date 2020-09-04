@@ -5,7 +5,9 @@ import edu.princeton.cs.algs4.Stopwatch;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import hw4.project2ab.*;
+import bearmaps.hw4.project2ab.ExtrinsicMinPQ;
+import bearmaps.hw4.project2ab.ArrayHeapMinPQ;
+
 
 public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
     private SolverOutcome outcome;
@@ -35,13 +37,21 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
         while (pq.size() > 0 && !pq.getSmallest().equals(goal) && sw.elapsedTime() < timeout) {
             Vertex p = pq.removeSmallest();
+            numStates++;
             List<WeightedEdge<Vertex>> neighborEdges = input.neighbors(p);
             for (WeightedEdge<Vertex> edge : neighborEdges) {
                 relax(edge);
             }
-
         }
         timeSpent = sw.elapsedTime();
+
+        if (timeSpent >= timeout) {
+            outcome = SolverOutcome.TIMEOUT;
+        } else if (pq.size() == 0) {
+            outcome = SolverOutcome.UNSOLVABLE;
+        } else {
+            outcome = SolverOutcome.SOLVED;
+        }
     }
 
     private double getDistTo(Vertex v) {
@@ -91,6 +101,7 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
      */
     @Override
     public List<Vertex> solution() {
+        // TODO
         return solution;
     }
 
@@ -100,6 +111,7 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
      */
     @Override
     public double solutionWeight() {
+        // TODO
         return solutionWeight;
     }
 

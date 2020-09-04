@@ -1,3 +1,5 @@
+import java.util.Comparator;
+
 /**
  * Represents a flight in the Flight problem.
  */
@@ -23,5 +25,17 @@ public class Flight {
 
     public int passengers() {
         return passengers;
+    }
+
+    public static class StartOrder implements Comparator<Flight> {
+        public int compare(Flight v, Flight w) {
+            return Integer.compare(v.startTime(), w.startTime());
+        }
+    }
+
+    public static class EndOrder implements Comparator<Flight> {
+        public int compare(Flight v, Flight w) {
+            return Integer.compare(v.endTime(), w.endTime());
+        }
     }
 }

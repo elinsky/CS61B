@@ -1,9 +1,7 @@
-package bearmaps;
+package bearmaps.hw4.project2ab;
 
-import edu.princeton.cs.algs4.In;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;

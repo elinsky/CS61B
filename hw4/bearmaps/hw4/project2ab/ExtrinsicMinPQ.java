@@ -1,4 +1,4 @@
-package bearmaps.proj2ab;
+package hw4.project2ab;
 /**
  * Priority queue where objects have a priority that is provided
  * extrinsically, i.e. are are supplied as an argument during insertion

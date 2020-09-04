@@ -11,7 +11,7 @@ abstract class HiddenComparable {
 
     private int size;
 
-    protected HiddenComparable(int size) {
+     HiddenComparable(int size) {
         this.size = size;
     }
 

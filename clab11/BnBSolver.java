@@ -9,24 +9,32 @@ import java.util.List;
  * size as the ith Bed.
  */
 public class BnBSolver {
+    public List<Bear> bear_solution;
+    public List<Bed> bed_solution;
 
     public BnBSolver(List<Bear> bears, List<Bed> beds) {
-        // TODO: Fix me.
+        bear_solution = bears;
+        bed_solution = new ArrayList<>();
+        for (Bear bear : bears) {
+            for (Bed bed : beds) {
+                if (bed.compareTo(bear) == 0) {
+                    bed_solution.add(bed);
+                }
+            }
+        }
     }
 
     /**
      * Returns List of Bears such that the ith Bear is the same size as the ith Bed of solvedBeds().
      */
     public List<Bear> solvedBears() {
-        // TODO: Fix me.
-        return null;
+        return bear_solution;
     }
 
     /**
      * Returns List of Beds such that the ith Bear is the same size as the ith Bear of solvedBears().
      */
     public List<Bed> solvedBeds() {
-        // TODO: Fix me.
-        return null;
+        return bed_solution;
     }
 }

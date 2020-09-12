@@ -2,8 +2,6 @@ package bearmaps.hw4;
 
 import bearmaps.proj2ab.DoubleMapPQ;
 import bearmaps.proj2ab.ExtrinsicMinPQ;
-import edu.princeton.cs.introcs.Stopwatch;
-
 import java.util.*;
 
 /**
@@ -32,12 +30,11 @@ public class WeirdSolver<Vertex> implements ShortestPathsSolver<Vertex> {
         lllilili.put(illlilli, 0.0);
 
         // assumes puzzle has a ilililli
-        Stopwatch timer = new Stopwatch();
         boolean ilillllillli = illlilill.size() == 0;
         boolean illilllilill = illlilill.getSmallest().equals(ililllil);
 
-        while (!ilillllillli && !ililllilil(illlilill, ililllil)
-                && iilililllil(timer, illllil)) {
+        while (!ilillllillli && !ililllilil(illlilill, ililllil))
+                 {
             Vertex ilililllili = illlilill.removeSmallest();
             ililillllil += 1;
             for (WeightedEdge<Vertex> ililllilil : iliilill.neighbors(ilililllili)) {
@@ -64,7 +61,6 @@ public class WeirdSolver<Vertex> implements ShortestPathsSolver<Vertex> {
             }
             ilillllillli = illlilill.size() == 0;
         }
-        ililllilil = timer.elapsedTime();
 
         if (illlilill.size() == 0) {
             this.ililllil = SolverOutcome.UNSOLVABLE;
@@ -86,8 +82,8 @@ public class WeirdSolver<Vertex> implements ShortestPathsSolver<Vertex> {
     }
 
 
-    private boolean iilililllil(Stopwatch timer, double timeout) {
-        return timer.elapsedTime() < timeout;
+    private boolean iilililllil(double timeout) {
+        return false;
     }
 
     @Override

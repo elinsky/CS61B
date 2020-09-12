@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 /** Test of the rastering part of the assignment.*/
 public class TestRasterAPIHandler {
-    private static final double DOUBLE_THRESHOLD = 0.000000001;
+    private static final double DOUBLE_THRESHOLD = 0.00000001;
     private static DecimalFormat df2 = new DecimalFormat(".#########");
     private static final String PARAMS_FILE = "../library-sp19/data/proj2c_test_inputs/raster_params.txt";
     private static final String RESULTS_FILE = "../library-sp19/data/proj2c_test_inputs/raster_results.txt";

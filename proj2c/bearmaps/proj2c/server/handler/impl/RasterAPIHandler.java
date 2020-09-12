@@ -9,6 +9,7 @@ import bearmaps.proj2c.utils.Constants;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static bearmaps.proj2c.utils.Constants.SEMANTIC_STREET_GRAPH;
 import static bearmaps.proj2c.utils.Constants.ROUTE_LIST;
@@ -23,9 +26,20 @@ import static bearmaps.proj2c.utils.Constants.ROUTE_LIST;
 /**
  * Handles requests from the web browser for map images. These images
  * will be rastered into one large image to be displayed to the user.
- * @author rahul, Josh Hug, _________
+ * @author rahul, Josh Hug, Brian Elinsky
  */
 public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<String, Object>> {
+
+    private final double REGION_ULLON = -122.29980468;
+    private final double REGION_LRLON = -122.21191406;
+    private final double REGION_ULLAT = 37.89219554;
+    private final double REGION_LRLAT = 37.82280243;
+    private final double REGION_WIDTH_LON = REGION_LRLON - REGION_ULLON;
+    private final double REGION_HEIGHT_LAT = REGION_LRLAT - REGION_ULLAT;
+    private final int MIN_DEPTH = 0;
+    private final int MAX_DEPTH = 7;
+    private final int IMG_WIDTH_PIXELS = 256;
+    private final int IMG_HEIGHT_PIXELS = 256;
 
     /**
      * Each raster request to the server will have the following parameters
@@ -84,12 +98,142 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      */
     @Override
     public Map<String, Object> processRequest(Map<String, Double> requestParams, Response response) {
-        //System.out.println("yo, wanna know the parameters given by the web browser? They are:");
-        //System.out.println(requestParams);
+//        System.out.println("yo, wanna know the parameters given by the web browser? They are:");
+//        System.out.println(requestParams);
+
+        int depth = optimal_image_depth(requestParams.get("lrlon"), requestParams.get("ullon"), requestParams.get("w"));
+        String top_left_image = image_covering_point(requestParams.get("ullon"), requestParams.get("ullat"), depth);
+        String bottom_right_image = image_covering_point(requestParams.get("lrlon"), requestParams.get("lrlat"), depth);
+        String[][] render_grid = generate_grid(top_left_image, bottom_right_image);
+
+        Double raster_ul_lon = image_lat_lon_corners(top_left_image).get("ullon");
+        Double raster_ul_lat = image_lat_lon_corners(top_left_image).get("ullat");
+        Double raster_lr_lon = image_lat_lon_corners(bottom_right_image).get("lrlon");
+        Double raster_lr_lat = image_lat_lon_corners(bottom_right_image).get("lrlat");
+
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented RasterAPIHandler.processRequest, nothing is displayed in "
-                + "your browser.");
+        results.put("render_grid", render_grid);
+        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("raster_lr_lon", raster_lr_lon);
+        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("depth", depth);
+        results.put("query_success", true); // TODO - Add better logic later
+
         return results;
+    }
+
+    /**
+     * Given an image name, returns a hashmap of the latitude and longitude of the image corners.
+     * @param img_name
+     * @return
+     */
+    private HashMap<String, Double> image_lat_lon_corners(String img_name) {
+        int depth = get_img_depth(img_name);
+        int x_coord = get_img_x_coord(img_name);
+        int y_coord = get_img_y_coord(img_name);
+        double img_width_in_longitude = img_width_in_lon_at_depth(depth);
+        double img_height_in_latitude = img_height_in_lat_at_depth(depth);
+
+        double ullon = REGION_ULLON + (x_coord * img_width_in_longitude);
+        double lrlon = REGION_ULLON + ((x_coord + 1) * img_width_in_longitude);
+        double ullat = REGION_ULLAT + (y_coord * img_height_in_latitude);
+        double lrlat = REGION_ULLAT + ((y_coord + 1) * img_height_in_latitude);
+
+        HashMap<String, Double> img_corners = new HashMap<>();
+        img_corners.put("ullon", ullon);
+        img_corners.put("lrlon", lrlon);
+        img_corners.put("ullat", ullat);
+        img_corners.put("lrlat", lrlat);
+
+        return img_corners;
+    }
+
+    // TODO you probably could create an image name subclass.  And put a lot of these helper methods in it.  Maybe its actually an image subclass.
+    private double img_width_in_lon_at_depth(int depth) {
+        return REGION_WIDTH_LON / Math.pow(2, depth);
+    }
+
+    private double img_height_in_lat_at_depth(int depth) {
+        return REGION_HEIGHT_LAT / Math.pow(2, depth);
+    }
+
+    private int get_img_depth(String img_name) {
+        return Integer.parseInt(img_name.substring(1, 2));
+    }
+
+    private int get_img_x_coord(String img_name) {
+        Pattern pattern = Pattern.compile("(?<=_x)[0-9]+");
+        Matcher m = pattern.matcher(img_name);
+        m.find();
+        return Integer.parseInt(m.group());
+    }
+
+    private int get_img_y_coord(String img_name) {
+        Pattern pattern = Pattern.compile("(?<=_y)[0-9]+");
+        Matcher m = pattern.matcher(img_name);
+        m.find();
+        return Integer.parseInt(m.group());
+    }
+
+    /**
+     * This method takes as input images in the top left corner and bottom right corner of the query box.  It returns
+     * a 2-dimensional array of image names that fill the whole query box.
+     * @param top_left_image : String, the name of the image in the top left of the query box.
+     * @param bottom_right_image : String, the name of the image in the bottom right of the query box.
+     * @return : String[][] : 2-dimensional array of images that fill up the whole query box.
+     */
+    private String[][] generate_grid(String top_left_image, String bottom_right_image) {
+        // TODO - Implement this.
+        int depth = get_img_depth(top_left_image);
+        int top_left_x_coord = get_img_x_coord(top_left_image);
+        int top_left_y_coord = get_img_y_coord(top_left_image);
+        int bottom_right_x_coord = get_img_x_coord(bottom_right_image);
+        int bottom_right_y_coord = get_img_y_coord(bottom_right_image);
+        int x_width = bottom_right_x_coord - top_left_x_coord + 1;
+        int y_width = bottom_right_y_coord - top_left_y_coord + 1;
+        String[][] render_grid = new String[y_width][x_width];
+        for (int x = 0; x < x_width; x++) {
+            for (int y = 0; y < y_width; y++) {
+                render_grid[y][x] = String.format("d%d_x%d_y%d.png", depth, x + top_left_x_coord, y + top_left_y_coord);
+                // TODO - make this a function.  It is now in two places in your class.
+            }
+        }
+        return render_grid;
+    }
+
+    /**
+     * Takes a latitude, longitude, and image depth, and returns the image that this point belongs in.
+     * @param lon : Number, a longitude.
+     * @param lat : Number, a latitude.
+     * @param depth : Number, the requested depth of the returned image.
+     */
+    private String image_covering_point(double lon, double lat, int depth) {
+        double img_width_in_longitude = img_width_in_lon_at_depth(depth);
+        double img_height_in_latitude = img_height_in_lat_at_depth(depth);
+        int x_coord = (int)((lon - REGION_ULLON) / img_width_in_longitude);
+        int y_coord = (int)((lat - REGION_ULLAT) / img_height_in_latitude);
+        // TODO - Later, handle lat and long points that are outside of the bounding box.
+        return String.format("d%d_x%d_y%d.png", depth, x_coord, y_coord);
+    }
+
+    /**
+     * Takes the width and the left and right longitudes of the query box and returns the optimal depth for the grid of
+     * images.
+     * @param lrlon Number, the bounding lower right longitude of the query box.
+     * @param ullon Number, the bounding upper left longitude of the query box.
+     * @param w Number, the width, in pixels, of the query box.
+     * @return A integer representing the depth for the display files.
+     */
+    private int optimal_image_depth(double lrlon, double ullon, double w) {
+        double Query_Box_LongDPP = (lrlon - ullon) / w;
+        int optimal_image_depth = 0;
+        double Rastered_Image_LongDPP = (REGION_LRLON - REGION_ULLON) / IMG_WIDTH_PIXELS;
+        while (Rastered_Image_LongDPP >= Query_Box_LongDPP) {
+            optimal_image_depth++;
+            Rastered_Image_LongDPP = Rastered_Image_LongDPP / 2.0;
+        }
+        return optimal_image_depth;
     }
 
     @Override

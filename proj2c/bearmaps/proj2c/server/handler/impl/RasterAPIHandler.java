@@ -102,21 +102,16 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
 //        System.out.println(requestParams);
 
         int depth = optimal_image_depth(requestParams.get("lrlon"), requestParams.get("ullon"), requestParams.get("w"));
-        String top_left_image = image_covering_point(requestParams.get("ullon"), requestParams.get("ullat"), depth);
-        String bottom_right_image = image_covering_point(requestParams.get("lrlon"), requestParams.get("lrlat"), depth);
+        Image top_left_image = new Image(requestParams.get("ullon"), requestParams.get("ullat"), depth);
+        Image bottom_right_image = new Image(requestParams.get("lrlon"), requestParams.get("lrlat"), depth);
         String[][] render_grid = generate_grid(top_left_image, bottom_right_image);
-
-        Double raster_ul_lon = image_lat_lon_corners(top_left_image).get("ullon");
-        Double raster_ul_lat = image_lat_lon_corners(top_left_image).get("ullat");
-        Double raster_lr_lon = image_lat_lon_corners(bottom_right_image).get("lrlon");
-        Double raster_lr_lat = image_lat_lon_corners(bottom_right_image).get("lrlat");
 
         Map<String, Object> results = new HashMap<>();
         results.put("render_grid", render_grid);
-        results.put("raster_ul_lon", raster_ul_lon);
-        results.put("raster_ul_lat", raster_ul_lat);
-        results.put("raster_lr_lon", raster_lr_lon);
-        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("raster_ul_lon", top_left_image.get_ullon());
+        results.put("raster_ul_lat", top_left_image.get_ullat());
+        results.put("raster_lr_lon", bottom_right_image.get_lrlon());
+        results.put("raster_lr_lat", bottom_right_image.get_lrlat());
         results.put("depth", depth);
         results.put("query_success", true); // TODO - Add better logic later
 
@@ -128,53 +123,53 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      * @param img_name
      * @return
      */
-    private HashMap<String, Double> image_lat_lon_corners(String img_name) {
-        int depth = get_img_depth(img_name);
-        int x_coord = get_img_x_coord(img_name);
-        int y_coord = get_img_y_coord(img_name);
-        double img_width_in_longitude = img_width_in_lon_at_depth(depth);
-        double img_height_in_latitude = img_height_in_lat_at_depth(depth);
-
-        double ullon = REGION_ULLON + (x_coord * img_width_in_longitude);
-        double lrlon = REGION_ULLON + ((x_coord + 1) * img_width_in_longitude);
-        double ullat = REGION_ULLAT + (y_coord * img_height_in_latitude);
-        double lrlat = REGION_ULLAT + ((y_coord + 1) * img_height_in_latitude);
-
-        HashMap<String, Double> img_corners = new HashMap<>();
-        img_corners.put("ullon", ullon);
-        img_corners.put("lrlon", lrlon);
-        img_corners.put("ullat", ullat);
-        img_corners.put("lrlat", lrlat);
-
-        return img_corners;
-    }
+//    private HashMap<String, Double> image_lat_lon_corners(String img_name) {
+//        int depth = get_img_depth(img_name);
+//        int x_coord = get_img_x_coord(img_name);
+//        int y_coord = get_img_y_coord(img_name);
+//        double img_width_in_longitude = img_width_in_lon_at_depth(depth);
+//        double img_height_in_latitude = img_height_in_lat_at_depth(depth);
+//
+//        double ullon = REGION_ULLON + (x_coord * img_width_in_longitude);
+//        double lrlon = REGION_ULLON + ((x_coord + 1) * img_width_in_longitude);
+//        double ullat = REGION_ULLAT + (y_coord * img_height_in_latitude);
+//        double lrlat = REGION_ULLAT + ((y_coord + 1) * img_height_in_latitude);
+//
+//        HashMap<String, Double> img_corners = new HashMap<>();
+//        img_corners.put("ullon", ullon);
+//        img_corners.put("lrlon", lrlon);
+//        img_corners.put("ullat", ullat);
+//        img_corners.put("lrlat", lrlat);
+//
+//        return img_corners;
+//    }
 
     // TODO you probably could create an image name subclass.  And put a lot of these helper methods in it.  Maybe its actually an image subclass.
-    private double img_width_in_lon_at_depth(int depth) {
-        return REGION_WIDTH_LON / Math.pow(2, depth);
-    }
+//    private double img_width_in_lon_at_depth(int depth) {
+//        return REGION_WIDTH_LON / Math.pow(2, depth);
+//    }
+//
+//    private double img_height_in_lat_at_depth(int depth) {
+//        return REGION_HEIGHT_LAT / Math.pow(2, depth);
+//    }
 
-    private double img_height_in_lat_at_depth(int depth) {
-        return REGION_HEIGHT_LAT / Math.pow(2, depth);
-    }
+//    private int get_img_depth(String img_name) {
+//        return Integer.parseInt(img_name.substring(1, 2));
+//    }
 
-    private int get_img_depth(String img_name) {
-        return Integer.parseInt(img_name.substring(1, 2));
-    }
+//    private int get_img_x_coord(String img_name) {
+//        Pattern pattern = Pattern.compile("(?<=_x)[0-9]+");
+//        Matcher m = pattern.matcher(img_name);
+//        m.find();
+//        return Integer.parseInt(m.group());
+//    }
 
-    private int get_img_x_coord(String img_name) {
-        Pattern pattern = Pattern.compile("(?<=_x)[0-9]+");
-        Matcher m = pattern.matcher(img_name);
-        m.find();
-        return Integer.parseInt(m.group());
-    }
-
-    private int get_img_y_coord(String img_name) {
-        Pattern pattern = Pattern.compile("(?<=_y)[0-9]+");
-        Matcher m = pattern.matcher(img_name);
-        m.find();
-        return Integer.parseInt(m.group());
-    }
+//    private int get_img_y_coord(String img_name) {
+//        Pattern pattern = Pattern.compile("(?<=_y)[0-9]+");
+//        Matcher m = pattern.matcher(img_name);
+//        m.find();
+//        return Integer.parseInt(m.group());
+//    }
 
     /**
      * This method takes as input images in the top left corner and bottom right corner of the query box.  It returns
@@ -183,18 +178,18 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      * @param bottom_right_image : String, the name of the image in the bottom right of the query box.
      * @return : String[][] : 2-dimensional array of images that fill up the whole query box.
      */
-    private String[][] generate_grid(String top_left_image, String bottom_right_image) {
+    private String[][] generate_grid(Image top_left_image, Image bottom_right_image) {
         // TODO - Implement this.
-        int depth = get_img_depth(top_left_image);
-        int top_left_x_coord = get_img_x_coord(top_left_image);
-        int top_left_y_coord = get_img_y_coord(top_left_image);
-        int bottom_right_x_coord = get_img_x_coord(bottom_right_image);
-        int bottom_right_y_coord = get_img_y_coord(bottom_right_image);
-        int x_width = bottom_right_x_coord - top_left_x_coord + 1;
-        int y_width = bottom_right_y_coord - top_left_y_coord + 1;
-        String[][] render_grid = new String[y_width][x_width];
-        for (int x = 0; x < x_width; x++) {
-            for (int y = 0; y < y_width; y++) {
+        int depth = top_left_image.get_depth();
+        int top_left_x_coord = top_left_image.get_x_coord();
+        int top_left_y_coord = top_left_image.get_y_coord();
+        int bottom_right_x_coord = bottom_right_image.get_x_coord();
+        int bottom_right_y_coord = bottom_right_image.get_y_coord();
+        int grid_x_width = bottom_right_x_coord - top_left_x_coord + 1;
+        int grid_y_width = bottom_right_y_coord - top_left_y_coord + 1;
+        String[][] render_grid = new String[grid_y_width][grid_x_width];
+        for (int x = 0; x < grid_x_width; x++) {
+            for (int y = 0; y < grid_y_width; y++) {
                 render_grid[y][x] = String.format("d%d_x%d_y%d.png", depth, x + top_left_x_coord, y + top_left_y_coord);
                 // TODO - make this a function.  It is now in two places in your class.
             }
@@ -208,14 +203,14 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      * @param lat : Number, a latitude.
      * @param depth : Number, the requested depth of the returned image.
      */
-    private String image_covering_point(double lon, double lat, int depth) {
-        double img_width_in_longitude = img_width_in_lon_at_depth(depth);
-        double img_height_in_latitude = img_height_in_lat_at_depth(depth);
-        int x_coord = (int)((lon - REGION_ULLON) / img_width_in_longitude);
-        int y_coord = (int)((lat - REGION_ULLAT) / img_height_in_latitude);
-        // TODO - Later, handle lat and long points that are outside of the bounding box.
-        return String.format("d%d_x%d_y%d.png", depth, x_coord, y_coord);
-    }
+//    private String image_covering_point(double lon, double lat, int depth) {
+//        double img_width_in_longitude = img_width_in_lon_at_depth(depth);
+//        double img_height_in_latitude = img_height_in_lat_at_depth(depth);
+//        int x_coord = (int)((lon - REGION_ULLON) / img_width_in_longitude);
+//        int y_coord = (int)((lat - REGION_ULLAT) / img_height_in_latitude);
+//        // TODO - Later, handle lat and long points that are outside of the bounding box.
+//        return String.format("d%d_x%d_y%d.png", depth, x_coord, y_coord);
+//    }
 
     /**
      * Takes the width and the left and right longitudes of the query box and returns the optimal depth for the grid of

@@ -18,7 +18,15 @@ public class ImageSet {
         this.bottom_lat = bottom_lat;
         width_lon = right_lon - left_lon;
         height_lat = bottom_lat - top_lat;
+    }
 
+    public boolean range_intersect_imageset(double range_left_lon, double range_right_lon, double range_top_lat, double range_bottom_lat) {
+        // TODO - implement
+        return true;
+    }
+
+    public boolean point_in_ImageSet(double lat, double lon) {
+        return bottom_lat <= lat & lat <= top_lat & left_lon <= lon & lon <= right_lon;
     }
 
     public double min_depth() {

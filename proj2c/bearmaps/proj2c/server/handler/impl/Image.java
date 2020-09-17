@@ -45,6 +45,18 @@ public class Image {
         lrlat = imageSet.top_lat() + ((y_coord + 1) * img_height_lat);
     }
 
+    private boolean image_in_imageset(int depth, double ullon, double ullat, double lrlon, double lrlat, ImageSet imageSet) {
+        if (depth < imageSet.min_depth() || depth > imageSet.max_depth()) {
+            return false;
+        } else if (ullon < imageSet.left_lon() || lrlon > imageSet.right_lon()) {
+            return false;
+        } else if (ullat > imageSet.top_lat() || lrlat < imageSet.bottom_lat()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public int depth() {
         return depth;
     }
@@ -94,7 +106,7 @@ public class Image {
     }
 
     private int get_img_y_coord(String img_name) {
-        Pattern pattern = Pattern.compile("(?<=_y)[0-9]+");
+        Pattern pattern = Pattern.compile("(?<=_y)[0m-9]+");
         Matcher m = pattern.matcher(img_name);
         m.find();
         return Integer.parseInt(m.group());

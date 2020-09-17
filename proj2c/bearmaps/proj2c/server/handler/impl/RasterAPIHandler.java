@@ -86,21 +86,48 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
     public Map<String, Object> processRequest(Map<String, Double> requestParams, Response response) {
 //        System.out.println("yo, wanna know the parameters given by the web browser? They are:");
 //        System.out.println(requestParams);
-
-        int depth = optimal_image_depth(requestParams.get("lrlon"), requestParams.get("ullon"), requestParams.get("w"));
-        Image top_left_image = new Image(requestParams.get("ullon"), requestParams.get("ullat"), depth, imageSet);
-        Image bottom_right_image = new Image(requestParams.get("lrlon"), requestParams.get("lrlat"), depth, imageSet);
-
         Map<String, Object> results = new HashMap<>();
+        if (!valid_request(requestParams)) {
+            return queryFail();
+        }
+        // If (!imageset.intersect_imageset(requestParams)
+        //       return queryFail();
+        //
+
+        int depth = optimal_image_depth(requestParams.get("lrlon"), requestParams.get("ullon"), requestParams.get("w"), imageSet);
+        Image top_left_image = top_left_image(requestParams.get("ullon"), requestParams.get("ullat"), depth, imageSet);
+        Image bottom_right_image = bottom_right_image(requestParams.get("lrlon"), requestParams.get("lrlat"), depth, imageSet);
+
         results.put("render_grid", generate_grid(top_left_image, bottom_right_image));
         results.put("raster_ul_lon", top_left_image.ullon());
         results.put("raster_ul_lat", top_left_image.ullat());
         results.put("raster_lr_lon", bottom_right_image.lrlon());
         results.put("raster_lr_lat", bottom_right_image.lrlat());
         results.put("depth", depth);
-        results.put("query_success", true); // TODO - Add better logic later
+        results.put("query_success", true);
 
         return results;
+    }
+
+    private Image top_left_image(double ullon, double ullat, int depth, ImageSet imageSet) {
+        ullon = Math.max(ullon, imageSet.left_lon());
+        ullat = Math.min(ullat, imageSet.top_lat());
+        return new Image(ullon, ullat, depth, imageSet);
+    }
+
+    private Image bottom_right_image(double lrlon, double lrlat, int depth, ImageSet imageSet) {
+        lrlon = Math.min(lrlon, imageSet.right_lon());
+        lrlat = Math.max(lrlat, imageSet.bottom_lat());
+        return new Image(lrlon, lrlat, depth, imageSet);
+    }
+
+    private boolean valid_request(Map<String, Double> requestParams) {
+        if (requestParams.get("ullon") >= requestParams.get("lrlon")) {
+            return false;
+        } else if (requestParams.get("ullat") <= requestParams.get("lrlat")) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -112,7 +139,6 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      * @return : String[][] : 2-dimensional array of images that fill up the whole query box.
      */
     private String[][] generate_grid(Image top_left, Image bottom_right) {
-        // TODO - Implement this.
         int depth = top_left.depth();
         int grid_width = bottom_right.x_coord() - top_left.x_coord() + 1;
         int grid_height = bottom_right.y_coord() - top_left.y_coord() + 1;
@@ -135,11 +161,11 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      * @param w         Number, the width, in pixels, of the query box.
      * @return A integer representing the depth for the display files.
      */
-    private int optimal_image_depth(double right_lon, double left_lon, double w) {
+    private int optimal_image_depth(double right_lon, double left_lon, double w, ImageSet imageSet) {
         double Query_Box_LongDPP = (right_lon - left_lon) / w;
         int optimal_image_depth = 0;
         double Rastered_Image_LongDPP = (imageSet.right_lon() - imageSet.left_lon()) / IMG_WIDTH_PIXELS;
-        while (Rastered_Image_LongDPP >= Query_Box_LongDPP) {
+        while (Rastered_Image_LongDPP >= Query_Box_LongDPP & optimal_image_depth < imageSet.max_depth()) {
             optimal_image_depth++;
             Rastered_Image_LongDPP = Rastered_Image_LongDPP / 2.0;
         }

@@ -19,6 +19,8 @@ public class AugmentedStreetMapGraph extends StreetMapGraph {
         super(dbPath);
         // You might find it helpful to uncomment the line below:
         // List<Node> nodes = this.getNodes();
+        // TODO - Need to edit this too
+        // Probably create a map from point to node
     }
 
 
@@ -30,6 +32,7 @@ public class AugmentedStreetMapGraph extends StreetMapGraph {
      * @return The id of the node in the graph closest to the target.
      */
     public long closest(double lon, double lat) {
+        // TODO - I need to implement this.
         return 0;
     }
 

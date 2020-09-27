@@ -9,7 +9,7 @@ import java.util.Random;
  * other randomness related stuff you might want to do. Feel free to
  * modify this file.
  * <p>
- * Adapted from https://introcs.cs.princeton.edu/java/22library/StdRandom.java.html
+ * Adapted from https://algs4.cs.princeton.edu/java/22library/StdRandom.java.html
 *
  */
 public class RandomUtils {

@@ -1,6 +1,6 @@
 package byow.SaveDemo;
 
-import edu.princeton.cs.introcs.StdDraw;
+import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.Font;
 import java.awt.Color;

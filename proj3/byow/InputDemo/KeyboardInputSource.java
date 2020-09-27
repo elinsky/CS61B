@@ -3,7 +3,7 @@ package byow.InputDemo;
 /**
  * Created by hug.
  */
-import edu.princeton.cs.introcs.StdDraw;
+import edu.princeton.cs.algs4.StdDraw;
 
 public class KeyboardInputSource implements InputSource {
     private static final boolean PRINT_TYPED_KEYS = false;

@@ -9,9 +9,16 @@ public class BoardVisualTest {
 
     public static void main(String[] args) {
         BoardGenerator board_generator = new BoardGenerator();
-        Board board = board_generator.generate_random_board2();
         TERenderer ter = new TERenderer();
+
+        Board board = board_generator.generate_random_board();
         ter.initialize(board.width(), board.height());
         ter.renderFrame(board.get_board());
+
+//        board = board_generator.gen3(board);
+//        ter.renderFrame(board.get_board());
+
+
+
     }
 }

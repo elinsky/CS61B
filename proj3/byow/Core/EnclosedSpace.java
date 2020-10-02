@@ -9,12 +9,14 @@ public class EnclosedSpace {
     protected Point initial_center;
     protected Point top_left;
     protected Point bottom_right;
-    protected Board board;
+    protected World world;
     protected ArrayList<Door> doors;
     protected Random rand;
+    protected Board board;
 
-    EnclosedSpace(Board board, PlacementInstructions initial_placement_instructions, Random rand) {
+    EnclosedSpace(World world, PlacementInstructions initial_placement_instructions, Random rand, Board board) {
         this.rand = rand;
+        this.world = world;
         this.board = board;
         initial_door_side = initial_placement_instructions.side_for_door();
         initial_center = initial_placement_instructions.location();
@@ -26,18 +28,18 @@ public class EnclosedSpace {
             case LEFT -> initial_door_location = new Point(initial_center.x() - 1, initial_center.y());
             case RIGHT -> initial_door_location = new Point(initial_center.x() + 1, initial_center.y());
         }
-        board.add_enclosed_space(this, initial_placement_instructions);
+        world.add_enclosed_space(this, initial_placement_instructions);
         this.doors = new ArrayList<>();
-        Door first_door = new Door(board, initial_door_location, true, initial_door_side);
+        Door first_door = new Door(world, initial_door_location, true, initial_door_side, board);
         doors.add(first_door);
-        board.add_used_door(first_door);
+        world.add_used_door(first_door);
     }
 
     public ArrayList<Door> get_doors() {
         return doors;
     }
 
-    private void build_door(Board board, Point position, boolean is_open) {
+    private void build_door(World world, Point position, boolean is_open) {
         // TODO
     }
 

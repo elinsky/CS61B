@@ -4,12 +4,14 @@ import byow.TileEngine.Tileset;
 
 public class Door {
     // The door class is dumb.  It doesn't know anything about its neighbors.
+    private World world;
     private Board board;
     private Point position;
     private boolean is_open;
     private Side side;
 
-    public Door(Board board, Point position, boolean is_open, Side side) {
+    public Door(World world, Point position, boolean is_open, Side side, Board board) {
+        this.world = world;
         this.board = board;
         this.position = position;
         this.is_open = is_open;
@@ -18,18 +20,18 @@ public class Door {
 
     public void draw() {
         if (is_open) {
-            board.set_tile(position, Tileset.FLOOR);
+            board.set_cell(position, Tileset.FLOOR);
         } else {
-            board.set_tile(position, Tileset.WALL);
+            board.set_cell(position, Tileset.WALL);
         }
     }
 
     public void close_door() {
-        board.set_tile(position, Tileset.WALL);
+        board.set_cell(position, Tileset.WALL);
     }
 
     public void open_door() {
-        board.set_tile(position, Tileset.FLOOR);
+        board.set_cell(position, Tileset.FLOOR);
     }
 
     /**

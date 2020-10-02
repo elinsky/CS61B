@@ -11,7 +11,7 @@ import static byow.Core.SideUtilities.random_side;
  */
 public class BoardGenerator {
     Random rand;
-    int SEED = 31;
+    int SEED = 34;
     private final double PROB_ROOM = 1.0;
     private final double PROB_HALLWAY = 0.0; // TODO move this back to 0.50 after you implement hallways.
 

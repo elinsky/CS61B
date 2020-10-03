@@ -6,12 +6,7 @@ package byow.Core;
 public class WorldVisualTest {
 
     public static void main(String[] args) {
-        WorldGenerator world_generator = new WorldGenerator();
-        world_generator.generate_random_world();
-
-
-
-
-
+        World world = new World(50, 50, 21);
+        world.render();
     }
 }

@@ -3,35 +3,13 @@ package byow.Core;
 import byow.TileEngine.Tileset;
 
 public class Door {
-    // The door class is dumb.  It doesn't know anything about its neighbors.
-    private World world;
-    private Board board;
-    private Point position;
-    private boolean is_open;
-    private Side side;
+    private final Point position;
+    private final Side side;
 
     public Door(World world, Point position, boolean is_open, Side side, Board board) {
-        this.world = world;
-        this.board = board;
+        // The door class is dumb.  It doesn't know anything about its neighbors.
         this.position = position;
-        this.is_open = is_open;
         this.side = side;
-    }
-
-    public void draw() {
-        if (is_open) {
-            board.set_cell(position, Tileset.FLOOR);
-        } else {
-            board.set_cell(position, Tileset.WALL);
-        }
-    }
-
-    public void close_door() {
-        board.set_cell(position, Tileset.WALL);
-    }
-
-    public void open_door() {
-        board.set_cell(position, Tileset.FLOOR);
     }
 
     /**
@@ -62,13 +40,5 @@ public class Door {
             default -> throw new RuntimeException("unrecognized side " + side);
         }
         return new PlacementInstructions(center_of_new_build_site, side_of_new_door, position);
-    }
-
-    public Point location() {
-        return position;
-    }
-
-    public boolean is_open() {
-        return is_open;
     }
 }

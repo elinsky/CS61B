@@ -5,8 +5,8 @@ public class RoomBuildPlans {
     private final Side side_for_door;
     private final Point existing_door_location;
 
-    public RoomBuildPlans(Point location, Side side_for_door, Point existing_door_location) {
-        this.new_door_location = location;
+    public RoomBuildPlans(Point center, Side side_for_door, Point existing_door_location) {
+        this.new_door_location = center;
         this.side_for_door = side_for_door;
         this.existing_door_location = existing_door_location;
     }

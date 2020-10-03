@@ -18,12 +18,4 @@ public class SideUtilities {
             return random_side_except(rand, exclude);
         }
     }
-
-    /**
-     * Utility method to return a random side.
-     * @return Randomly selected Side
-     */
-    public static Side random_side(Random rand) {
-        return random_side_except(rand, null);
-    }
 }

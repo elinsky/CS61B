@@ -1,22 +1,19 @@
 package byow.Core;
 
-import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
  * A board is a size.
  */
-public class World {
-    private final int SEED = 50;
+public class BoardGenerator {
     private final Board board;
     private final ArrayList<Door> unused_doors;
     int seed;
 
-    public World(int height, int width, int seed) {
+    public BoardGenerator(int height, int width, int seed) {
         this.seed = seed;
         // TODO - make sure the minimum board size is 9x9
         this.board = new Board(height, width, Tileset.NOTHING);
@@ -30,53 +27,27 @@ public class World {
         Point rand_start = new Point(rand_x, rand_y);
         Point second_door_site = new Point(rand_start.x(), rand_start.y() + 2);
         RoomBuildPlans initial_placement_instructions = new RoomBuildPlans(rand_start, Side.TOP, second_door_site);
-        EnclosedSpace initial_room = new EnclosedSpace(this, initial_placement_instructions, rand, board);
-        initial_room.grow_to_random_size(rand);
+        Room initial_room = new Room(initial_placement_instructions, rand, board);
+        unused_doors.addAll(initial_room.get_doors());
 
         // Create second room
         Door initial_door = initial_room.get_doors().remove(0);
-        RoomBuildPlans second_room_plan = initial_door.get_placement_instructions_for_neighbor();
-        EnclosedSpace second_room = new EnclosedSpace(this, second_room_plan, rand, this.board);
-        second_room.grow_to_random_size(rand);
+        RoomBuildPlans second_room_plan = initial_door.get_build_plans_for_neighbor();
+        Room second_room = new Room(second_room_plan, rand, this.board);
+        unused_doors.addAll(second_room.get_doors());
 
         // Let the rest of the board emerge
-        while (this.unused_doors_left()) {
+        while (unused_doors.size() > 0) {
             Door door_to_nowhere = this.get_random_door_to_build_off(rand);
-            RoomBuildPlans placement_instructions = door_to_nowhere.get_placement_instructions_for_neighbor();
-            EnclosedSpace new_space = new EnclosedSpace(this, placement_instructions, rand, this.board);
-            new_space.grow_to_random_size(rand);
+            RoomBuildPlans adjoining_room_plans = door_to_nowhere.get_build_plans_for_neighbor();
+            Room adjoining_room = new Room(adjoining_room_plans, rand, this.board);
+            unused_doors.addAll(adjoining_room.get_doors());
+            unused_doors.removeIf(x -> !usable_placement_instructions(x.get_build_plans_for_neighbor()));
         }
     }
 
-    // TODO - probably delete this later?  Not really sure here.
-    public void render() {
-        board.render_frame();
-    }
-
-    public void add_door(Door door) {
-        unused_doors.add(door);
-    }
-
-    public boolean are_cells_unoccupied(List<Point> cells) {
-        for (Point cell : cells) {
-            if (board.get_cell(cell) != Tileset.NOTHING) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    /**
-     * Determines if the board has any doors left that don't connect to a neighbor.  It also checks to make sure the
-     * unused doors have adequate space to build off of.
-     *
-     * @return boolean.  True = there are doors left that we can build off.  False = No doors left we can build off.
-     */
-     private boolean unused_doors_left() {
-         // First remove doors that aren't usable
-         unused_doors.removeIf(x -> !usable_placement_instructions(x.get_placement_instructions_for_neighbor()));
-         return unused_doors.size() > 0;
+    public Board get_board() {
+        return board;
     }
 
     /**
@@ -91,17 +62,17 @@ public class World {
         }
         java.util.Collections.shuffle(unused_doors, rand);
         Door unused_door = unused_doors.remove(0);
-        if (usable_placement_instructions(unused_door.get_placement_instructions_for_neighbor())) {
+        if (usable_placement_instructions(unused_door.get_build_plans_for_neighbor())) {
             return unused_door;
         } else {
             return get_random_door_to_build_off(rand);
         }
     }
 
-    private boolean usable_placement_instructions(RoomBuildPlans placement_instructions) {
+    private boolean usable_placement_instructions(RoomBuildPlans plans) {
         // For now this just checks if all the points are on the board and empty.  Later I might need to also check to
         // see if the door connects to another door.
-        Point center = placement_instructions.location();
+        Point center = plans.location();
         for (int x = center.x() - 1; x < center.x() + 2; x++) {
             for (int y = center.y() + 1; y > center.y() - 2; y--) {
                 Point cell = new Point(x, y);
@@ -112,11 +83,4 @@ public class World {
         }
         return true;
     }
-
-    private void drawHorizontalRow(TETile type, int x_start, int y, int length) {
-        for (int x = x_start; x < x_start + length; x++) {
-            board.set_cell(new Point(x, y), type);
-        }
-    }
-
 }

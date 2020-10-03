@@ -4,7 +4,7 @@ public class Door {
     private final Point position;
     private final Side side;
 
-    public Door(World world, Point position, boolean is_open, Side side, Board board) {
+    public Door(Point position, boolean is_open, Side side, Board board) {
         // The door class is dumb.  It doesn't know anything about its neighbors.
         this.position = position;
         this.side = side;
@@ -15,7 +15,7 @@ public class Door {
      * hallway that connects to this door.
      * @return Build Instructions object = location for area + side that the door goes on.
      */
-    public RoomBuildPlans get_placement_instructions_for_neighbor() {
+    public RoomBuildPlans get_build_plans_for_neighbor() {
         Point center_of_new_build_site;
         Side side_of_new_door;
         switch (side) {

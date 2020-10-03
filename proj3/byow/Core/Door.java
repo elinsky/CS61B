@@ -1,7 +1,5 @@
 package byow.Core;
 
-import byow.TileEngine.Tileset;
-
 public class Door {
     private final Point position;
     private final Side side;
@@ -17,7 +15,7 @@ public class Door {
      * hallway that connects to this door.
      * @return Build Instructions object = location for area + side that the door goes on.
      */
-    public PlacementInstructions get_placement_instructions_for_neighbor() {
+    public RoomBuildPlans get_placement_instructions_for_neighbor() {
         Point center_of_new_build_site;
         Side side_of_new_door;
         switch (side) {
@@ -39,6 +37,6 @@ public class Door {
             }
             default -> throw new RuntimeException("unrecognized side " + side);
         }
-        return new PlacementInstructions(center_of_new_build_site, side_of_new_door, position);
+        return new RoomBuildPlans(center_of_new_build_site, side_of_new_door, position);
     }
 }

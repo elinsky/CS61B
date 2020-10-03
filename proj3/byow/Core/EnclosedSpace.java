@@ -1,5 +1,6 @@
 package byow.Core;
 
+import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 import java.util.ArrayList;
@@ -15,9 +16,8 @@ public class EnclosedSpace {
     protected ArrayList<Door> doors;
     protected Random rand;
     protected Board board;
-    private double PROB_GROW = 0.90;
 
-    EnclosedSpace(World world, PlacementInstructions initial_placement_instructions, Random rand, Board board) {
+    EnclosedSpace(World world, RoomBuildPlans initial_placement_instructions, Random rand, Board board) {
         this.rand = rand;
         this.world = world;
         this.board = board;
@@ -31,7 +31,7 @@ public class EnclosedSpace {
             case LEFT -> initial_door_location = new Point(initial_center.x() - 1, initial_center.y());
             case RIGHT -> initial_door_location = new Point(initial_center.x() + 1, initial_center.y());
         }
-        world.draw_space(initial_placement_instructions);
+        draw_space(initial_placement_instructions);
         this.doors = new ArrayList<>();
         Door first_door = new Door(world, initial_door_location, true, initial_door_side, board);
         doors.add(first_door);
@@ -51,6 +51,7 @@ public class EnclosedSpace {
      * be closed by default.
      */
     public void grow_to_random_size(Random rand) {
+        double PROB_GROW = 0.90;
         while (RandomUtils.uniform(rand) < PROB_GROW) {
             Side grow_side = SideUtilities.random_side_except(rand, initial_door_side);
             if (room_to_grow(grow_side)) {
@@ -58,6 +59,33 @@ public class EnclosedSpace {
             }
         }
         set_rest_of_doors();
+    }
+
+    private void draw_space(RoomBuildPlans placement) {
+        // TODO consider moving this method to the EnclosedSpace class
+        Point center = placement.location();
+        Point existing_door_to_open = placement.existing_door_location();
+        Point top_left = new Point(center.x() - 1, center.y() + 1);
+        Point bottom_right = new Point(center.x() + 1, center.y() - 1);
+        Point new_door = switch (placement.side_for_door()) {
+            case TOP -> new Point(center.x(), center.y() + 1);
+            case BOTTOM -> new Point(center.x(), center.y() - 1);
+            case LEFT -> new Point(center.x() - 1, center.y());
+            case RIGHT -> new Point(center.x() + 1, center.y());
+        };
+
+        draw_rectangle(top_left, bottom_right, Tileset.WALL);
+        board.set_cell(center, Tileset.FLOOR);
+        board.set_cell(new_door, Tileset.FLOOR);
+        board.set_cell(existing_door_to_open, Tileset.FLOOR);
+    }
+
+    private void draw_rectangle(Point top_left, Point bottom_right, TETile type) {
+        for (int x = top_left.x(); x <= bottom_right.x(); x++) {
+            for (int y = top_left.y(); y >= bottom_right.y(); y--) {
+                board.set_cell(new Point(x, y), type);
+            }
+        }
     }
 
     private boolean room_to_grow(Side grow_side) {

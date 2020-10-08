@@ -6,7 +6,7 @@ package byow.Core;
 public class BoardVisualTest {
 
     public static void main(String[] args) {
-        BoardGenerator boardGenerator = new BoardGenerator(50, 50, 22);
+        BoardGenerator boardGenerator = new BoardGenerator(50, 50, 23);
         Board board = boardGenerator.get_board();
         board.render_frame();
     }

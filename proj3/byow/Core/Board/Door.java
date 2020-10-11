@@ -1,4 +1,6 @@
-package byow.Core;
+package byow.Core.Board;
+
+import byow.Core.Point;
 
 public class Door {
     private final Point position;

@@ -1,5 +1,6 @@
-package byow.Core;
+package byow.Core.Board;
 
+import byow.Core.*;
 import byow.TileEngine.Tileset;
 
 import java.util.ArrayList;
@@ -11,14 +12,13 @@ import java.util.Random;
 public class BoardGenerator {
     private final Board board;
     private final ArrayList<Door> unused_doors;
-    int seed;
+    Random rand;
 
-    public BoardGenerator(int width, int height, int seed) {
-        this.seed = seed;
+    public BoardGenerator(int width, int height, Random rand) {
+        this.rand = rand;
         // TODO - make sure the minimum board size is 9x9
         this.board = new Board(height, width, Tileset.NOTHING);
         this.unused_doors = new ArrayList<>();
-        Random rand = new Random(seed);
 
         // Bootstrap the initial world generation process
         // Create first room

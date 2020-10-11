@@ -1,4 +1,4 @@
-package byow.Core;
+package byow.Core.Board;
 
 public enum Side {
     TOP,

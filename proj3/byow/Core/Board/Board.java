@@ -1,5 +1,6 @@
-package byow.Core;
+package byow.Core.Board;
 
+import byow.Core.Point;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 

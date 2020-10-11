@@ -1,4 +1,6 @@
-package byow.Core;
+package byow.Core.Board;
+
+import byow.Core.Point;
 
 public class RoomBuildPlans {
     private final Point new_door_location;

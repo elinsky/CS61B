@@ -1,5 +1,6 @@
-package byow.Core;
+package byow.Core.Board;
 
+import byow.Core.*;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 

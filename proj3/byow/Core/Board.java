@@ -12,49 +12,53 @@ import java.util.List;
  * sophisticated data structures or algorithms.
  */
 public class Board {
-    private final int dumb_height;
-    private final int dumb_width;
-    private final TETile[][] dumbboard;
-    private final TERenderer ter;
+    private final int height;
+    private final int width;
+    private final TETile[][] board;
+//    private final TERenderer ter;
 
 
 
     public Board(int height, int width, TETile default_tile) {
-        this.dumb_height = height;
-        this.dumb_width = width;
-        this.dumbboard = new TETile[height][width];
+        this.height = height;
+        this.width = width;
+        this.board = new TETile[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                dumbboard[x][y] = default_tile;
+                board[x][y] = default_tile;
             }
         }
-        ter = new TERenderer();
-        ter.initialize(height, width);
-        ter.renderFrame(dumbboard);
+//        ter = new TERenderer();
+//        ter.initialize(height, width);
+//        ter.renderFrame(board);
     }
 
-    public void render_frame() {
-        ter.renderFrame(dumbboard);
+//    public void render_frame() {
+//        ter.renderFrame(board);
+//    }
+
+    public TETile[][] get_board() {
+        return board;
     }
 
     public TETile get_cell(Point point) {
-        return dumbboard[point.x()][point.y()];
+        return board[point.x()][point.y()];
     }
 
     public void set_cell(Point point, TETile tile) {
-        dumbboard[point.x()][point.y()] = tile;
+        board[point.x()][point.y()] = tile;
     }
 
     public int get_width() {
-        return dumb_width;
+        return width;
     }
 
     public int get_height() {
-        return dumb_height;
+        return height;
     }
 
     public boolean is_valid_point(Point point) {
-        return point.x() >= 0 && point.x() < dumb_width && point.y() >= 0 && point.y() < dumb_height;
+        return point.x() >= 0 && point.x() < width && point.y() >= 0 && point.y() < height;
     }
 
     public boolean are_valid_points(List<Point> points) {
@@ -65,7 +69,5 @@ public class Board {
         }
         return true;
     }
-
-
 
 }

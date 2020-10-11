@@ -13,7 +13,7 @@ public class BoardGenerator {
     private final ArrayList<Door> unused_doors;
     int seed;
 
-    public BoardGenerator(int height, int width, int seed) {
+    public BoardGenerator(int width, int height, int seed) {
         this.seed = seed;
         // TODO - make sure the minimum board size is 9x9
         this.board = new Board(height, width, Tileset.NOTHING);

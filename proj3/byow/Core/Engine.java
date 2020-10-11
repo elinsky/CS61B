@@ -94,6 +94,11 @@ public class Engine {
         return selection;
     }
 
+    private void lose_game() {
+        StdDraw.text(WIDTH / 2.0, HEIGHT / 1.5, "You Lose");
+
+    }
+
     private void play_game(int seed) {
         // TODO
         // TODO - Implement Heads up display with hover over
@@ -131,6 +136,7 @@ public class Engine {
             ghost2.move(SideUtilities.random_side_except(rand, null));
             ghost3.move(SideUtilities.random_side_except(rand, null));
             ter.renderFrame(board.get_board());
+            lose_game();
         }
     }
 

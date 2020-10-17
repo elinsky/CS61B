@@ -21,6 +21,7 @@ public class Engine {
     private int score = 0;
     private ArrayList<Sprite> sprites = new ArrayList<>();
     private Random rand;
+    private Board board;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -101,6 +102,16 @@ public class Engine {
         return selection;
     }
 
+    public void process_move(Sprite mover, Point destination) {
+        // TODO - handle interactions between objects here.  e.g. collect coins or ghost killing you
+
+        // First check to see if destination is traversable
+        if (ObjectUtils.is_tile_traversable(destination, board, mover.getTraversable_tiles())) {
+            board.set_cell(destination, mover.getShape());
+        }
+
+    }
+
     private void lose_game() {
         StdDraw.clear(Color.BLACK);
         Font font = new Font("Monaco", Font.BOLD, 30);
@@ -122,17 +133,19 @@ public class Engine {
         // TODO - refactor so that interactWithKeyboard handles ALL inputs, even from menu
 
         BoardGenerator boardGenerator = new BoardGenerator(WIDTH, HEIGHT - 2, rand);
-        Board board = boardGenerator.get_board();
+        this.board = boardGenerator.get_board();
         ter.initialize(WIDTH, HEIGHT);
         ter.renderFrame(board.get_board());
 
-        sprites.add(new Player(board, Tileset.AVATAR, ObjectUtils.random_walkable_cell(board, rand)));
-        sprites.add(new Enemy(board, Tileset.ORANGE_GHOST, ObjectUtils.random_walkable_cell(board, rand)));
-        sprites.add(new Enemy(board, Tileset.BLUE_GHOST, ObjectUtils.random_walkable_cell(board, rand)));
-        sprites.add(new Enemy(board, Tileset.PINK_GHOST, ObjectUtils.random_walkable_cell(board, rand)));
-        Coin coin1 = new Coin(board, ObjectUtils.random_walkable_cell(board, rand));
-        Coin coin2 = new Coin(board, ObjectUtils.random_walkable_cell(board, rand));
-        Coin coin3 = new Coin(board, ObjectUtils.random_walkable_cell(board, rand));
+        ArrayList<TETile> floor = new ArrayList<>();
+        floor.add(Tileset.FLOOR);
+        sprites.add(new Player(board, this, ObjectUtils.random_cell(board, rand, floor)));
+        sprites.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
+        sprites.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
+        sprites.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
+        Coin coin1 = new Coin(board, ObjectUtils.random_cell(board, rand, floor));
+        Coin coin2 = new Coin(board, ObjectUtils.random_cell(board, rand, floor));
+        Coin coin3 = new Coin(board, ObjectUtils.random_cell(board, rand, floor));
         ter.renderFrame(board.get_board());
 
         // Main game loop

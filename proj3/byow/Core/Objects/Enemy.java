@@ -3,18 +3,26 @@ package byow.Core.Objects;
 import byow.Core.Board.Board;
 import byow.Core.Board.Side;
 import byow.Core.Board.SideUtilities;
+import byow.Core.Engine;
 import byow.Core.Objects.Sprite;
 import byow.Core.Point;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Enemy extends Sprite {
     private Random rand; // TODO - delete after adding in AI
 
-    public Enemy(Board board, TETile shape, Point location) {
-        super(board, shape, location);
+    public Enemy(Board board, Engine engine, Point location) {
+        super(board, engine, location);
         this.rand = new Random(21);
+        this.traversable_tiles = new ArrayList<>();
+        traversable_tiles.add(Tileset.FLOOR);
+        traversable_tiles.add(Tileset.AVATAR);
+        this.shape = Tileset.BLUE_GHOST;
+        board.set_cell(location, shape);
     }
 
     @Override

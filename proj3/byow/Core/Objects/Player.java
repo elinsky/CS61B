@@ -2,14 +2,26 @@ package byow.Core.Objects;
 
 import byow.Core.Board.Board;
 import byow.Core.Board.Side;
+import byow.Core.Engine;
 import byow.Core.KeyListener;
 import byow.Core.Objects.Sprite;
 import byow.Core.Point;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
+
+import java.util.ArrayList;
 
 public class Player extends Sprite {
-    public Player(Board board, TETile shape, Point location) {
-        super(board, shape, location);
+    public Player(Board board, Engine engine, Point location) {
+        super(board, engine, location);
+        this.traversable_tiles = new ArrayList<>();
+        traversable_tiles.add(Tileset.FLOOR);
+        traversable_tiles.add(Tileset.COIN);
+        traversable_tiles.add(Tileset.BLUE_GHOST);
+        traversable_tiles.add(Tileset.ORANGE_GHOST);
+        traversable_tiles.add(Tileset.PINK_GHOST);
+        this.shape = Tileset.AVATAR;
+        board.set_cell(location, shape);
     }
 
     @Override

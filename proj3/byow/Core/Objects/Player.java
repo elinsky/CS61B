@@ -2,7 +2,6 @@ package byow.Core.Objects;
 
 import byow.Core.Board.Board;
 import byow.Core.Board.Side;
-import byow.Core.KeyListener;
 import byow.Core.Objects.Sprite;
 import byow.Core.Point;
 import byow.TileEngine.Tileset;

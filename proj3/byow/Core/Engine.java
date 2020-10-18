@@ -24,7 +24,6 @@ public class Engine {
     private final ArrayList<Coin> coins = new ArrayList<>();
     private Board board;
     private int seed;
-    private Random rand;
     private Player player;
 
     /**
@@ -36,23 +35,9 @@ public class Engine {
         KeyboardInputSource input_source = new KeyboardInputSource();
         while (input_source.possibleNextInput() & game_active) {
             char key = input_source.getNextKey();
-            game_active = process_key(key);
+            process_key(key);
         }
-
-//        String selection = solicit_play_selection();
-//        switch (selection) {
-//            case "n":
-//                display_seed_menu();
-//                int seed = solicit_seed();
-//                play_game(new Random(seed));
-//                break;
-//            case "l":
-//                // TODO
-//                break;
-//            case "q":
-//                // TODO
-//                break;
-//        }
+        end_game(game_state);
     }
 
     /**
@@ -85,15 +70,15 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         StringInputDevice input_device = new StringInputDevice(input);
-        while (input_device.possibleNextInput() & game_active) {
+        while (input_device.possibleNextInput()) {
             char key = input_device.getNextKey();
-            game_active = process_key(key);
+            process_key(key);
         }
         return board.get_board();
     }
 
     // return value indicates if the game continues
-    private boolean process_key(char key) {
+    private void process_key(char key) {
         boolean keep_playing = true;
         switch (game_state) {
             case "menu":
@@ -106,7 +91,8 @@ public class Engine {
                         // TODO
                         break;
                     case 'Q':
-                        keep_playing = false;
+                        game_active = false;
+                        game_state = "Goodbye";
                         break;
                 }
                 break;
@@ -116,20 +102,17 @@ public class Engine {
                     initialize_game();
                 } else {
                     seed = seed * 10 + Character.getNumericValue(key);
+                    display_seed_menu();
                 }
                 break;
             case "play":
                 play_round(key);
                 break;
             case "You Win":
-                end_game(game_state);
-                break;
             case "You Lose":
-                end_game(game_state);
+                game_active = false;
                 break;
         }
-        // TODO
-        return keep_playing;
     }
 
     private void display_menu() {
@@ -162,34 +145,13 @@ public class Engine {
         StdDraw.clear(Color.BLACK);
 
         // Draw Title
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 1.5, "Enter a four digit number");
+        StdDraw.text(WIDTH / 2.0, 40, "Enter a number: ");
+        StdDraw.text(WIDTH / 2.0, 37, Integer.toString(seed));
+        StdDraw.text(WIDTH / 2.0, 34, "Then press 'S' to start");
 
         StdDraw.show();
         StdDraw.pause(1);
     }
-
-    private int solicit_seed() {
-        StringBuilder seed = new StringBuilder();
-        while (seed.length() < 4) {
-            // TODO - handle all different length numbers
-            // TODO - handle case where user inputs characters other than numbers.
-            // TODO - display numbers as you type them.
-            String key = KeyListener.get_keypress(1);
-            seed.append(key);
-        }
-
-        return Integer.parseInt(seed.toString());
-    }
-
-//    private String solicit_play_selection() {
-//        String selection = "";
-//        Set<String> valid_selections = new HashSet<String>(Arrays.asList("n", "l", "q"));
-//        while (!valid_selections.contains(selection)) {
-//            selection = KeyListener.get_keypress(1);
-//        }
-//
-//        return selection;
-//    }
 
     private void end_game(String message) {
         StdDraw.clear(Color.BLACK);
@@ -217,7 +179,7 @@ public class Engine {
     }
 
     private void initialize_game() {
-        rand = new Random(seed);
+        Random rand = new Random(seed);
 
         // Initialize the board
         BoardGenerator boardGenerator = new BoardGenerator(WIDTH, HEIGHT - 2, rand);
@@ -241,23 +203,8 @@ public class Engine {
         // TODO - add multiple levels
         // TODO - refactor so that interactWithKeyboard handles ALL inputs, even from menu
 
-        // Generate and draw the board
-//        BoardGenerator boardGenerator = new BoardGenerator(WIDTH, HEIGHT - 2, rand);
-//        board = boardGenerator.get_board();
-//        ter.initialize(WIDTH, HEIGHT);
-//        ter.renderFrame(board.get_board());
-
-        // Add player, enemies, and coins to board
-//        ArrayList<TETile> floor = new ArrayList<>();
-//        floor.add(Tileset.FLOOR);
-//        Player player = new Player(board, ObjectUtils.random_cell(board, rand, floor));
-//        add_objects_to_board(board, 3, 3, rand);
-//        ter.renderFrame(board.get_board());
-
-        // Main game loop.  Each loop every sprite gets a turn.
         // Player takes turn
         player.move(key);
-        ter.renderFrame(board.get_board());
 
         // Check to see if player collected a coin
         ArrayList<Coin> collected = new ArrayList<>();
@@ -274,13 +221,11 @@ public class Engine {
             if (player.location().equals(enemy.location())) {
                 game_state = "You Lose";
             }
-        ter.renderFrame(board.get_board());
 
         // Check for player win
         if (coins.size() == 0) {
             game_state = "You Win";
         }
-        ter.renderFrame(board.get_board());
 
         // Enemies take turns
         for (Enemy enemy : enemies) {

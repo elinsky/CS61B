@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public abstract class Sprite {
     private Point location;
-    private final Board board; // TODO eventually try to delete this.
+    private final Board board;
     protected TETile shape;
     protected ArrayList<TETile> traversable_tiles;
 

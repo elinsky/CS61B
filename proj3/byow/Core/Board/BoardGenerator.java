@@ -16,7 +16,6 @@ public class BoardGenerator {
 
     public BoardGenerator(int width, int height, Random rand) {
         this.rand = rand;
-        // TODO - make sure the minimum board size is 9x9
         this.board = new Board(height, width, Tileset.NOTHING);
         this.unused_doors = new ArrayList<>();
 

@@ -25,7 +25,6 @@ public class Enemy extends Sprite {
 
     @Override
     public void take_turn() {
-        // TODO - later make the enemies smart.  They should use a search algorithm to find the player.
         Side direction = SideUtilities.random_side_except(rand, null);
         // TODO - I don't want enemies to be able to move to the same cell as a coin
         move(direction);

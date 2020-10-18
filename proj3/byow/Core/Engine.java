@@ -62,7 +62,6 @@ public class Engine {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] interactWithInputString(String input) {
-        // TODO: Fill out this method so that it run the engine using the input
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
         // to interactWithKeyboard().
@@ -79,7 +78,6 @@ public class Engine {
 
     // return value indicates if the game continues
     private void process_key(char key) {
-        boolean keep_playing = true;
         switch (game_state) {
             case "menu":
                 switch (key) {
@@ -106,8 +104,18 @@ public class Engine {
                 }
                 break;
             case "play":
-                play_round(key);
+                if (key == ':') {
+                    game_state = "command mode";
+                } else {
+                    play_round(key);
+                }
                 break;
+            case "command mode":
+                if (key == 'Q') {
+                    // TODO - save game
+                } else {
+                    game_state = "play";
+                }
             case "You Win":
             case "You Lose":
                 game_active = false;
@@ -196,13 +204,6 @@ public class Engine {
     }
 
     private void play_round(char key) {
-        // TODO
-        // TODO - Implement Heads up display with hover over
-        // TODO - implement coin counter in heads up display
-        // TODO - implement AI for ghosts
-        // TODO - add multiple levels
-        // TODO - refactor so that interactWithKeyboard handles ALL inputs, even from menu
-
         // Player takes turn
         player.move(key);
 

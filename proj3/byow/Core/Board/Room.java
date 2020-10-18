@@ -26,7 +26,6 @@ public class Room {
         top_left = new Point(initial_center.x() - 1, initial_center.y() + 1);
         bottom_right = new Point(initial_center.x() + 1, initial_center.y() - 1);
         switch (initial_door_side) {
-            // TODO - I think I should be able to refactor the switch statements away by adding polymorphisim.
             case TOP -> initial_door_location = new Point(initial_center.x(), initial_center.y() + 1);
             case BOTTOM -> initial_door_location = new Point(initial_center.x(), initial_center.y() - 1);
             case LEFT -> initial_door_location = new Point(initial_center.x() - 1, initial_center.y());
@@ -107,7 +106,6 @@ public class Room {
     }
 
     private void update_room_dimensions(Side expansion_side) {
-        // TODO - I think I should be able to refactor the switch statments away by adding polymorphisim.
         switch (expansion_side) {
             case TOP -> top_left = new Point(top_left.x(), top_left.y() + 1);
             case BOTTOM -> bottom_right = new Point(bottom_right.x(), bottom_right.y() - 1);
@@ -117,7 +115,6 @@ public class Room {
     }
 
     private ArrayList<Point> new_floor_points(Side expansion_side) {
-        // TODO - I think I should be able to refactor the switch statments away by adding polymorphisim.
         ArrayList<Point> new_floor = new ArrayList<>();
         switch (expansion_side) {
             case TOP -> {
@@ -145,7 +142,6 @@ public class Room {
     }
 
     private ArrayList<Point> new_wall_points(Side expansion_side) {
-        // TODO - I think I should be able to refactor the switch statments away by adding polymorphisim.
         ArrayList<Point> new_wall = new ArrayList<>();
         switch (expansion_side) {
             case TOP -> {
@@ -173,7 +169,6 @@ public class Room {
     }
 
     private void set_rest_of_doors() {
-        // TODO - I think I should be able to refactor the switch statments away by adding polymorphisim.
         if (initial_door_side != Side.LEFT) {
             ArrayList<Point> left_wall_points = vertical_points_between(top_left, new Point(top_left.x(), bottom_right.y()));
             java.util.Collections.shuffle(left_wall_points, rand);
@@ -210,7 +205,6 @@ public class Room {
 
     // Exclusive of the end points
     private ArrayList<Point> vertical_points_between(Point a, Point b) {
-        // TODO - there is probably a way to clean up these two 'points between' methods.
         ArrayList<Point> points = new ArrayList<>();
         Point top_point;
         Point bottom_point;

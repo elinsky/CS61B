@@ -1,9 +1,11 @@
 package byow.TileEngine;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
+import byow.Core.Point;
 import edu.princeton.cs.algs4.StdDraw;
 import byow.Core.RandomUtils;
 
@@ -21,7 +23,7 @@ import byow.Core.RandomUtils;
  * to make your TETile class mutable, if you prefer.
  */
 
-public class TETile {
+public class TETile implements Serializable {
     private final char character; // Do not rename character or the autograder will break.
     private final Color textColor;
     private final Color backgroundColor;
@@ -188,5 +190,27 @@ public class TETile {
         }
 
         return copy;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        TETile that = (TETile) obj;
+        boolean result = true;
+        if (that.character != this.character) {
+            result = false;
+        } else if (!that.textColor.equals(this.textColor)) {
+            result = false;
+        } else if (!that.backgroundColor.equals(this.backgroundColor)) {
+            result = false;
+        } else if (!that.description.equals(this.description)) {
+            result = false;
+        }
+        return result;
     }
 }

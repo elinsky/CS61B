@@ -27,7 +27,7 @@ public class ObjectUtils {
     public static boolean is_tile_traversable(Point desired_destination, Board board, ArrayList<TETile> traversable_tiles) {
         TETile destination_tile = board.get_cell(desired_destination);
         for (TETile traversable_tile : traversable_tiles) {
-            if (destination_tile == traversable_tile) {
+            if (destination_tile.equals(traversable_tile)) {
                 return true;
             }
         }

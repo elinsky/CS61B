@@ -11,20 +11,22 @@ import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
+import java.io.*;
 import java.util.*;
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    private static final int WIDTH = 80;
-    private static final int HEIGHT = 60;
+    private static final int WIDTH = 15;
+    private static final int HEIGHT = 15;
     private boolean game_active = true;
     private String game_state = "menu";
-    private final ArrayList<Enemy> enemies = new ArrayList<>();
-    private final ArrayList<Coin> coins = new ArrayList<>();
+    private Player player;
+    private ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Coin> coins = new ArrayList<>();
     private Board board;
     private int seed;
-    private Player player;
+    Random rand;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -81,17 +83,18 @@ public class Engine {
         switch (game_state) {
             case "menu":
                 switch (key) {
-                    case 'N':
+                    case 'N' -> {
                         game_state = "select_seed";
                         display_seed_menu();
-                        break;
-                    case 'L':
-                        // TODO
-                        break;
-                    case 'Q':
+                    }
+                    case 'L' -> {
+                        load_game();
+                        game_state = "play";
+                    }
+                    case 'Q' -> {
                         game_active = false;
                         game_state = "Goodbye";
-                        break;
+                    }
                 }
                 break;
             case "select_seed":
@@ -112,7 +115,9 @@ public class Engine {
                 break;
             case "command mode":
                 if (key == 'Q') {
-                    // TODO - save game
+                    save_game();
+                    game_active = false;
+                    game_state = "Save successful";
                 } else {
                     game_state = "play";
                 }
@@ -120,6 +125,56 @@ public class Engine {
             case "You Lose":
                 game_active = false;
                 break;
+        }
+    }
+
+    private void load_game() {
+        File f = new File("./save_data");
+        if (f.exists()) {
+            try {
+                FileInputStream fs = new FileInputStream(f);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                enemies = (ArrayList<Enemy>) os.readObject();
+                coins = (ArrayList<Coin>) os.readObject();
+                player = (Player) os.readObject();
+                board = (Board) os.readObject();
+                seed = (int) os.readObject();
+                rand = (Random) os.readObject();
+                ter = (TERenderer) os.readObject();
+            } catch (FileNotFoundException e) {
+                System.out.println("file not found");
+                System.exit(0);
+            } catch (IOException e) {
+                System.out.println(e);
+                System.exit(0);
+            } catch (ClassNotFoundException e) {
+                System.out.println("class not found");
+                System.exit(0);
+            }
+        }
+    }
+
+    private void save_game() {
+        File f = new File("./save_data");
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            FileOutputStream fs = new FileOutputStream(f);
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(enemies);
+            os.writeObject(coins);
+            os.writeObject(player);
+            os.writeObject(board);
+            os.writeObject(seed);
+            os.writeObject(rand);
+            os.writeObject(ter);
+        }  catch (FileNotFoundException e) {
+            System.out.println("file not found");
+            System.exit(0);
+        } catch (IOException e) {
+            System.out.println(e);
+            System.exit(0);
         }
     }
 
@@ -187,7 +242,7 @@ public class Engine {
     }
 
     private void initialize_game() {
-        Random rand = new Random(seed);
+        rand = new Random(seed);
 
         // Initialize the board
         BoardGenerator boardGenerator = new BoardGenerator(WIDTH, HEIGHT - 2, rand);
@@ -231,7 +286,6 @@ public class Engine {
         // Enemies take turns
         for (Enemy enemy : enemies) {
             enemy.take_turn();
-            ter.renderFrame(board.get_board());
             if (enemy.location().equals(player.location())) {
                 game_state = "You Lose";
             }

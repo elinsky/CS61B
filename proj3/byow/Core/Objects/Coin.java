@@ -5,7 +5,9 @@ import byow.Core.Point;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-public class Coin {
+import java.io.Serializable;
+
+public class Coin implements Serializable {
     private final Board board;
     private Point location;
 

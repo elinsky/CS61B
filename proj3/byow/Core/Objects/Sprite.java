@@ -6,9 +6,11 @@ import byow.Core.Point;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Sprite {
+public abstract class Sprite implements Serializable {
     private Point location;
     private final Board board;
     protected TETile shape;
@@ -46,4 +48,15 @@ public abstract class Sprite {
     public Point location() {
         return location;
     }
+
+//    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+//        // TODO
+//    }
+//
+//    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+//        // TODO
+//    }
+//    private void readObjectNoData() throws ObjectStreamException {
+//        // TODO
+//    }
 }

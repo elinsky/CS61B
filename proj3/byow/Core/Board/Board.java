@@ -4,6 +4,8 @@ import byow.Core.Point;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  * this class is too shallow.  Maybe it is only shallow because my boards are currently small, and don't require
  * sophisticated data structures or algorithms.
  */
-public class Board {
+public class Board implements Serializable {
     private final int height;
     private final int width;
     private final TETile[][] board;

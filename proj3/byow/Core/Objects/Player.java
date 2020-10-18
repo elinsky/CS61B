@@ -6,9 +6,11 @@ import byow.Core.Objects.Sprite;
 import byow.Core.Point;
 import byow.TileEngine.Tileset;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Player extends Sprite {
+public class Player extends Sprite implements Serializable {
 
     public Player(Board board, Point location) {
         super(board, location);

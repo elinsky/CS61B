@@ -7,10 +7,13 @@ import byow.Core.Objects.Sprite;
 import byow.Core.Point;
 import byow.TileEngine.Tileset;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Enemy extends Sprite {
+public class Enemy extends Sprite implements Serializable {
     private final Random rand; // TODO - delete after adding in AI
 
     public Enemy(Board board, Point location) {
@@ -29,4 +32,13 @@ public class Enemy extends Sprite {
         // TODO - I don't want enemies to be able to move to the same cell as a coin
         move(direction);
     }
+
+//    private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
+//        aOutputStream.writeObject(rand);
+//        aOutputStream.writeObject(traversable_tiles);
+//        aOutputStream.writeObject(shape);
+//        aOutputStream.writeObject(board);
+//
+//        // TODO
+//    }
 }

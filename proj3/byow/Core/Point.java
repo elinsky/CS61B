@@ -1,9 +1,11 @@
 package byow.Core;
 
+import java.io.Serializable;
+
 /**
  * A point is an X Y coordinate.
  */
-public class Point {
+public class Point implements Serializable {
     private final int x;
     private final int y;
 

@@ -14,14 +14,15 @@ import java.util.*;
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 60;
+    public static final int WIDTH = 15;
+    public static final int HEIGHT = 15;
     private boolean game_active = true;
     private String game_state = "menu";
     private int score = 0;
-    private ArrayList<Sprite> sprites = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private Random rand;
     private Board board;
+    private ArrayList<Coin> coins = new ArrayList<>();
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -44,6 +45,7 @@ public class Engine {
         }
     }
 
+    // Show screen that asks for seed
     private int solicit_seed() {
         StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
         Font font = new Font("Monaco", Font.BOLD, 30);
@@ -70,6 +72,7 @@ public class Engine {
         return Integer.parseInt(seed.toString());
     }
 
+    // Main menu code
     private String solicit_play_selection() {
         StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
         Font font = new Font("Monaco", Font.BOLD, 60);
@@ -112,12 +115,12 @@ public class Engine {
 
     }
 
-    private void lose_game() {
+    private void end_game(String message) {
         StdDraw.clear(Color.BLACK);
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
         StdDraw.setPenColor(Color.white);
-        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, "You Lose");
+        StdDraw.text(WIDTH / 2.0, HEIGHT / 2.0, message);
         StdDraw.show();
     }
 
@@ -139,24 +142,66 @@ public class Engine {
 
         ArrayList<TETile> floor = new ArrayList<>();
         floor.add(Tileset.FLOOR);
-        sprites.add(new Player(board, this, ObjectUtils.random_cell(board, rand, floor)));
-        sprites.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
-        sprites.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
-        sprites.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
-        Coin coin1 = new Coin(board, ObjectUtils.random_cell(board, rand, floor));
-        Coin coin2 = new Coin(board, ObjectUtils.random_cell(board, rand, floor));
-        Coin coin3 = new Coin(board, ObjectUtils.random_cell(board, rand, floor));
+
+        // Add Player and Enemies to Board
+        Player player = new Player(board, this, ObjectUtils.random_cell(board, rand, floor));
+//        enemies.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
+//        enemies.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
+        enemies.add(new Enemy(board, this, ObjectUtils.random_cell(board, rand, floor)));
+
+        // Add Coins to Board
+//        coins.add(new Coin(board, ObjectUtils.random_cell(board, rand, floor)));
+        coins.add(new Coin(board, ObjectUtils.random_cell(board, rand, floor)));
+//        coins.add(new Coin(board, ObjectUtils.random_cell(board, rand, floor)));
+
         ter.renderFrame(board.get_board());
 
-        // Main game loop
+        // Main game loop.  Each loop every sprite gets a turn.
         while (game_active) {
-            for (Sprite sprite : sprites) {
-                sprite.take_turn();
-                // TODO - check for kills
-                // TODO - check for collecting coins
+            // Player takes turn
+            player.take_turn();
+            ter.renderFrame(board.get_board()); // TODO DELETE ME
+            ter.renderFrame(board.get_board()); // TODO DELETE ME
+            // Check to see if player collected a coin
+            ArrayList<Coin> collected = new ArrayList<>();
+            for (Coin coin : coins) {
+                if (player.location().equals(coin.location())) {
+                    coin.collect();
+                    collected.add(coin);
+                }
             }
+            coins.removeAll(collected);
+
+            // Check for player win
+            if (coins.size() == 0) {
+                game_state = "You Win";
+                game_active = false;
+            }
+
+            ter.renderFrame(board.get_board()); // TODO DELETE ME
+            ter.renderFrame(board.get_board()); // TODO DELETE ME
+
+            // Check to see if player died
+            for (Enemy enemy: enemies)
+                if (player.location().equals(enemy.location())) {
+                    game_state = "You Lose";
+                    game_active = false;
+                }
             ter.renderFrame(board.get_board());
+            ter.renderFrame(board.get_board()); // TODO DELETE ME
+
+            // Enemies take turns
+            for (Enemy enemy : enemies) {
+                enemy.take_turn();
+                ter.renderFrame(board.get_board());
+                ter.renderFrame(board.get_board()); // TODO DELETE ME
+                if (enemy.location().equals(player.location())) {
+                    game_state = "You Lose";
+                    game_active = false;
+                }
+            }
         }
+        end_game(game_state);
     }
 
     /**

@@ -25,6 +25,8 @@ public abstract class Sprite {
 
     abstract public void take_turn();
 
+    abstract public void die();
+
     public ArrayList<TETile> getTraversable_tiles() {
         return traversable_tiles;
     }
@@ -48,5 +50,9 @@ public abstract class Sprite {
             location = move;
             board.set_cell(location, shape);
         }
+    }
+
+    public Point location() {
+        return location;
     }
 }

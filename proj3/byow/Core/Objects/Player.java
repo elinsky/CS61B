@@ -12,6 +12,7 @@ import byow.TileEngine.Tileset;
 import java.util.ArrayList;
 
 public class Player extends Sprite {
+
     public Player(Board board, Engine engine, Point location) {
         super(board, engine, location);
         this.traversable_tiles = new ArrayList<>();
@@ -33,5 +34,10 @@ public class Player extends Sprite {
             case "s" -> move(Side.BOTTOM);
             case "d" -> move(Side.RIGHT);
         }
+    }
+
+    @Override
+    public void die() {
+        // TODO
     }
 }

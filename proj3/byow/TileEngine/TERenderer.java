@@ -13,8 +13,6 @@ import java.awt.Font;
  */
 public class TERenderer {
     private static final int TILE_SIZE = 16;
-    private int width;
-    private int height;
     private int xOffset;
     private int yOffset;
 
@@ -28,15 +26,13 @@ public class TERenderer {
      * @param h height of the window in tiles.
      */
     public void initialize(int w, int h, int xOff, int yOff) {
-        this.width = w;
-        this.height = h;
         this.xOffset = xOff;
         this.yOffset = yOff;
-        StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
+        StdDraw.setCanvasSize(w * TILE_SIZE, h * TILE_SIZE);
         Font font = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
         StdDraw.setFont(font);      
-        StdDraw.setXscale(0, width);
-        StdDraw.setYscale(0, height);
+        StdDraw.setXscale(0, w);
+        StdDraw.setYscale(0, h);
 
         StdDraw.clear(new Color(0, 0, 0));
 
@@ -53,7 +49,7 @@ public class TERenderer {
      * you then subsequently call renderFrame with a TETile[50][25] array, it will
      * leave 10 tiles blank on the right side and 5 tiles blank on the top side. If
      * you want to leave extra space on the left or bottom instead, use the other
-     * initializatiom method.
+     * initialization method.
      * @param w width of the window in tiles
      * @param h height of the window in tiles.
      */
@@ -97,5 +93,6 @@ public class TERenderer {
             }
         }
         StdDraw.show();
+        StdDraw.pause(20);
     }
 }

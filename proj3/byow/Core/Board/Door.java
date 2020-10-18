@@ -21,7 +21,7 @@ public class Door {
         Point center_of_new_build_site;
         Side side_of_new_door;
         switch (side) {
-            // TODO - I think I should be able to refactor the switch statments away by adding polymorphisim.
+            // TODO - I think I should be able to refactor the switch statements away by adding polymorphisim.
             case TOP -> {
                 center_of_new_build_site = new Point(position.x(), position.y() + 2);
                 side_of_new_door = Side.BOTTOM;

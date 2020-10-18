@@ -33,6 +33,9 @@ public class BoringWorldDemo {
 
         // draws the world to the screen
         ter.renderFrame(world);
+        System.out.print("Test");
+        System.out.print("Test");
+        System.out.print("Test");
     }
 
 

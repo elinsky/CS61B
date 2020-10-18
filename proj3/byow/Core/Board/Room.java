@@ -26,7 +26,7 @@ public class Room {
         top_left = new Point(initial_center.x() - 1, initial_center.y() + 1);
         bottom_right = new Point(initial_center.x() + 1, initial_center.y() - 1);
         switch (initial_door_side) {
-            // TODO - I think I should be able to refactor the switch statments away by adding polymorphisim.
+            // TODO - I think I should be able to refactor the switch statements away by adding polymorphisim.
             case TOP -> initial_door_location = new Point(initial_center.x(), initial_center.y() + 1);
             case BOTTOM -> initial_door_location = new Point(initial_center.x(), initial_center.y() - 1);
             case LEFT -> initial_door_location = new Point(initial_center.x() - 1, initial_center.y());

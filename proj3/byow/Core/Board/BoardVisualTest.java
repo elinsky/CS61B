@@ -20,5 +20,10 @@ public class BoardVisualTest {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         ter.renderFrame(board.get_board());
+        System.out.print("Test");
+        System.out.print("Test");
+        System.out.print("Test");
+        System.out.print("Test");
+        System.out.print("Test");
     }
 }

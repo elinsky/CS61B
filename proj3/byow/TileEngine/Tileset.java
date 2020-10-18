@@ -34,9 +34,7 @@ public class Tileset {
     public static final TETile SAND = new TETile('▒', Color.yellow, floor_gray, "sand");
     public static final TETile MOUNTAIN = new TETile('▲', Color.gray, floor_gray, "mountain");
     public static final TETile COIN = new TETile('O', Color.YELLOW, floor_gray, "coin", "/Users/brianelinsky/Dropbox/ActiveProjects/CS61B/cs61b_code/skeleton-sp19/proj3/byow/TileEngine/Retro-Coin-icon.png");
-    public static final TETile ORANGE_GHOST = new TETile('X', Color.YELLOW, Color.RED, "ghost", "/Users/brianelinsky/Dropbox/ActiveProjects/CS61B/cs61b_code/skeleton-sp19/proj3/byow/TileEngine/orange-ghost.png");
     public static final TETile BLUE_GHOST = new TETile('X', Color.YELLOW, floor_gray, "ghost", "/Users/brianelinsky/Dropbox/ActiveProjects/CS61B/cs61b_code/skeleton-sp19/proj3/byow/TileEngine/blue-ghost.png");
-    public static final TETile PINK_GHOST = new TETile('X', Color.YELLOW, floor_gray, "ghost", "/Users/brianelinsky/Dropbox/ActiveProjects/CS61B/cs61b_code/skeleton-sp19/proj3/byow/TileEngine/pink-ghost.png");
 }
 
 

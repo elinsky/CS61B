@@ -21,14 +21,23 @@ public class Player extends Sprite {
         board.set_cell(location, shape);
     }
 
+    public void move(char key) {
+        switch (key) {
+            case 'W' -> move(Side.TOP);
+            case 'A' -> move(Side.LEFT);
+            case 'S' -> move(Side.BOTTOM);
+            case 'D' -> move(Side.RIGHT);
+        }
+    }
+
     @Override
     public void take_turn() {
-        String key = KeyListener.get_keypress(1);
-        switch (key) {
-            case "w" -> move(Side.TOP);
-            case "a" -> move(Side.LEFT);
-            case "s" -> move(Side.BOTTOM);
-            case "d" -> move(Side.RIGHT);
-        }
+//        String key = KeyListener.get_keypress(1);
+//        switch (key) {
+//            case "w" -> move(Side.TOP);
+//            case "a" -> move(Side.LEFT);
+//            case "s" -> move(Side.BOTTOM);
+//            case "d" -> move(Side.RIGHT);
+//        }
     }
 }

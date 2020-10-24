@@ -17,8 +17,8 @@ import java.util.*;
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    private static final int WIDTH = 15;
-    private static final int HEIGHT = 15;
+    private static final int WIDTH = 80;
+    private static final int HEIGHT = 60;
     private boolean game_active = true;
     private String game_state = "menu";
     private Player player;

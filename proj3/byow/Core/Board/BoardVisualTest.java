@@ -19,6 +19,6 @@ public class BoardVisualTest {
         Board board = boardGenerator.get_board();
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
-        ter.renderFrame(board.get_board());
+        ter.renderFrame(board.get_board(), "");
     }
 }

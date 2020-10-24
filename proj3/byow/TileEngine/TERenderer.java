@@ -16,6 +16,8 @@ public class TERenderer implements Serializable {
     private static final int TILE_SIZE = 16;
     private int xOffset;
     private int yOffset;
+    private int w;
+    private int h;
 
     /**
      * Same functionality as the other initialization method. The only difference is that the xOff
@@ -27,6 +29,8 @@ public class TERenderer implements Serializable {
      * @param h height of the window in tiles.
      */
     public void initialize(int w, int h, int xOff, int yOff) {
+        this.w = w;
+        this.h = h;
         this.xOffset = xOff;
         this.yOffset = yOff;
         StdDraw.setCanvasSize(w * TILE_SIZE, h * TILE_SIZE);
@@ -80,7 +84,7 @@ public class TERenderer implements Serializable {
      * the screen in tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void renderFrame(TETile[][] world) {
+    public void renderFrame(TETile[][] world, String hud_message) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
@@ -93,6 +97,15 @@ public class TERenderer implements Serializable {
                 world[x][y].draw(x + xOffset, y + yOffset);
             }
         }
+
+        // Display HUD
+        Font font = new Font("Monaco", Font.BOLD, 14);
+        StdDraw.setFont(font);
+        StdDraw.setPenColor(Color.WHITE);
+
+        // Draw HUD Message
+        StdDraw.text(2, h - 1, hud_message);
+
         StdDraw.show();
         StdDraw.pause(20);
     }

@@ -14,6 +14,9 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
+import static edu.princeton.cs.algs4.StdDraw.mouseX;
+import static edu.princeton.cs.algs4.StdDraw.mouseY;
+
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
@@ -35,13 +38,27 @@ public class Engine {
     public void interactWithKeyboard() {
         display_menu();
         KeyboardInputSource input_source = new KeyboardInputSource();
+
         while (game_active) {
             if (input_source.possibleNextInput()) {
                 char key = input_source.getNextKey();
                 process_key(key);
             }
+            process_mouse((int) mouseX(), (int) mouseY());
         }
         end_game(game_state);
+    }
+
+    private void process_mouse(int x, int y) {
+        if (game_state.equals("play")) {
+            Point mouse_point = new Point(x, y);
+            if (!board.is_valid_point(mouse_point)) {
+                return;
+            }
+            TETile hover = board.get_cell(mouse_point);
+            String cell_description = hover.description();
+            ter.renderFrame(board.get_board(), cell_description);
+        }
     }
 
     /**
@@ -257,7 +274,7 @@ public class Engine {
         player = new Player(board, ObjectUtils.random_cell(board, rand, floor));
         add_objects_to_board(board, 3, 3, rand);
 
-        ter.renderFrame(board.get_board());
+        ter.renderFrame(board.get_board(), "");
     }
 
     private void play_round(char key) {
@@ -292,6 +309,6 @@ public class Engine {
                 game_state = "You Lose";
             }
         }
-        ter.renderFrame(board.get_board());
+        ter.renderFrame(board.get_board(), "");
     }
 }

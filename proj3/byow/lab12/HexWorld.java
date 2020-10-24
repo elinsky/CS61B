@@ -71,6 +71,6 @@ public class HexWorld {
         addHexagon(Tileset.AVATAR, 6, 20, 20, hexWorld);
 
 
-        ter.renderFrame(hexWorld);
+        ter.renderFrame(hexWorld, "");
     }
 }

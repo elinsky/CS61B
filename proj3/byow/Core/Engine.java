@@ -35,9 +35,11 @@ public class Engine {
     public void interactWithKeyboard() {
         display_menu();
         KeyboardInputSource input_source = new KeyboardInputSource();
-        while (input_source.possibleNextInput() & game_active) {
-            char key = input_source.getNextKey();
-            process_key(key);
+        while (game_active) {
+            if (input_source.possibleNextInput()) {
+                char key = input_source.getNextKey();
+                process_key(key);
+            }
         }
         end_game(game_state);
     }

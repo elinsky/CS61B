@@ -9,13 +9,17 @@ import byow.TileEngine.Tileset;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * A sprite is a character on a game board.  Sprites can move around.  There are some tiles that sprites are allowed to
+ * more around on (e.g. floor) and other types of tiles for which they cannot move on (e.g. wall).  Sprites wait their
+ * turn in order to move.  And sprites decided themselves how they want to move.
+ */
 public abstract class Sprite implements Serializable {
     private Point location;
     private final Board board;
     protected TETile shape;
     protected ArrayList<TETile> traversableTiles;
 
-    // A sprite is a character on the board.
     public Sprite(Board board, Point location) {
         this.board = board;
         this.location = location;

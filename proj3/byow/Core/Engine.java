@@ -17,6 +17,13 @@ import java.util.*;
 import static edu.princeton.cs.algs4.StdDraw.mouseX;
 import static edu.princeton.cs.algs4.StdDraw.mouseY;
 
+/**
+ * An engine manages a game on a board that is full of coins, players, and enemies.  The engine decides who's turn it is.
+ * An engine is in charge of updating the board when a sprite moves.  An engine also listens to input from a mouse and
+ * keyboard, and dispatches the input to the appropriate handling methods.  An engine also determines the rules of the
+ * game, and enforces those rules.  An engine is also responsible for refreshing the screen at appropriate intervals.
+ * Finally, an engine is in charge of displaying the game's menu items.
+ */
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
@@ -47,18 +54,6 @@ public class Engine {
             processMouse((int) mouseX(), (int) mouseY());
         }
         endGame(gameState);
-    }
-
-    private void processMouse(int x, int y) {
-        if (gameState.equals("play")) {
-            Point mousePoint = new Point(x, y);
-            if (!board.isValidPoint(mousePoint)) {
-                return;
-            }
-            TETile hover = board.getCell(mousePoint);
-            String cellDescription = hover.description();
-            ter.renderFrame(board.getBoard(), cellDescription);
-        }
     }
 
     /**
@@ -97,7 +92,27 @@ public class Engine {
         return board.getBoard();
     }
 
-    // return value indicates if the game continues
+    /**
+     * Helper method for 'interactWithKeyboard'.  Given x y coordinates, if the game state is 'play', this method will
+     * check to see if it is a valid point on the board.  If it is a valid point, then it will display the description
+     * of the cell at (x, y) on the heads up display at the top left of the game window.
+     */
+    private void processMouse(int x, int y) {
+        if (gameState.equals("play")) {
+            Point mousePoint = new Point(x, y);
+            if (!board.isValidPoint(mousePoint)) {
+                return;
+            }
+            TETile hover = board.getCell(mousePoint);
+            String cellDescription = hover.description();
+            ter.renderFrame(board.getBoard(), cellDescription);
+        }
+    }
+
+    /**
+     * This is a dispatch method that takes a keypress as input, and depending on the state of the game, will process
+     * that keypress accordingly.
+     */
     private void processKey(char key) {
         switch (gameState) {
             case "menu":
@@ -147,6 +162,9 @@ public class Engine {
         }
     }
 
+    /**
+     * This method checks for a ./save_data file.  If present, it will load the saved game for you.
+     */
     private void loadGame() {
         File f = new File("./save_data");
         if (f.exists()) {
@@ -173,6 +191,9 @@ public class Engine {
         }
     }
 
+    /**
+     * Saves the game state to the ./save_data file.
+     */
     private void saveGame() {
         File f = new File("./save_data");
         try {
@@ -197,6 +218,9 @@ public class Engine {
         }
     }
 
+    /**
+     * Displays the main menu.  This is the first screen that players see when starting up the game.
+     */
     private void displayMenu() {
         StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16); // Each cell is 16x16 pixels
         Font font = new Font("Monaco", Font.BOLD, 60);
@@ -221,6 +245,10 @@ public class Engine {
         StdDraw.pause(1);
     }
 
+    /**
+     * If the player decides to start a new game, this menu prompts the user for a random seed to be used to generate
+     * the game board.
+     */
     private void displaySeedMenu() {
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
@@ -235,6 +263,10 @@ public class Engine {
         StdDraw.pause(1);
     }
 
+    /**
+     * Displays a screen that informs the user that the game is over.  The 'message' is the message that is displayed
+     * on the screen.
+     */
     private void endGame(String message) {
         StdDraw.clear(Color.BLACK);
         Font font = new Font("Monaco", Font.BOLD, 30);
@@ -245,6 +277,13 @@ public class Engine {
         StdDraw.pause(1);
     }
 
+    /**
+     * Adds enemies and coins to a newly created board. It will add these at random locations.
+     * @param board board to add these objects to.
+     * @param numEnemies number of enemies to place on the board.
+     * @param numCoins number of coins to place on the board.
+     * @param rand Random object used to choose random locations for these objects.
+     */
     private void addObjectsToBoard(Board board, int numEnemies, int numCoins, Random rand) {
         ArrayList<TETile> floor = new ArrayList<>();
         floor.add(Tileset.FLOOR);
@@ -260,6 +299,10 @@ public class Engine {
         }
     }
 
+    /**
+     * Once a random seed has been set, 'initializeGame' generates the random board, adds the player, enemies, and coins
+     * to it, and then displays the game board to the player.
+     */
     private void initializeGame() {
         rand = new Random(seed);
 
@@ -277,6 +320,12 @@ public class Engine {
         ter.renderFrame(board.getBoard(), "");
     }
 
+    /**
+     * This method ensures that all sprites (players and enemies) take a turn playing.  The method checks to see if
+     * coins have been collected.  It checks to see if a player died.  And it checks for win and loss scenarios. After
+     * the turn is over, the method will render the board.
+     * @param key
+     */
     private void playRound(char key) {
         // Player takes turn
         player.move(key);

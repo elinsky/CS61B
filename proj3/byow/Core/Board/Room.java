@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * A room is a rectangular area on a Board consisting of floor tiles surrounded by wall tiles.  This object is transient,
+ * it only exists to facilitate the creation of a new board.  Rooms also have at least one door, although they may have
+ * multiple doors.  A side of a room can only have one door on it.
+ */
 public class Room {
     protected Point initialDoorLocation; // This is the door created when the room is created.
     protected Side initialDoorSide;
@@ -18,7 +23,13 @@ public class Room {
     protected Random rand;
     protected Board board;
 
-    Room(RoomBuildPlans plans, Random rand, Board board) {
+    /**
+     * Creates a new room.
+     * @param plans location and door information for the new room.
+     * @param rand Random object to be used in determining the size of the room.
+     * @param board Board to place the room on.
+     */
+    public Room(RoomBuildPlans plans, Random rand, Board board) {
         this.rand = rand;
         this.board = board;
         initialDoorSide = plans.sideForDoor();
@@ -38,6 +49,9 @@ public class Room {
         growToRandomSize(rand);
     }
 
+    /**
+     * Returns a list of doors that are attached to this room.
+     */
     public ArrayList<Door> getDoors() {
         return doors;
     }
@@ -88,11 +102,19 @@ public class Room {
         }
     }
 
+    /**
+     * Given a side, determines if there is empty space available to push the wall out, making the room bigger.
+     * @param growSide
+     * @return
+     */
     private boolean hasSpaceToGrow(Side growSide) {
         ArrayList<Point> newWall = newWallPoints(growSide);
         return board.areValidPoints(newWall) && areCellsUnoccupied(newWall);
     }
 
+    /**
+     * Given a side, this method pushes the wall for that side out, making the room bigger.
+     */
     private void expandWall(Side growSide) {
         ArrayList<Point> newWall = newWallPoints(growSide);
         for (Point wall : newWall) {
@@ -105,6 +127,11 @@ public class Room {
         updateRoomDimensions(growSide);
     }
 
+    /**
+     * Helper method for 'expandWall'.  After a wall has been pused outward, making the room bigger, this method ensures
+     * that we update the instance variables 'topLeft' and 'bottomRight' as necessary.
+     * @param expansionSide
+     */
     private void updateRoomDimensions(Side expansionSide) {
         switch (expansionSide) {
             case TOP -> topLeft = new Point(topLeft.x(), topLeft.y() + 1);
@@ -114,6 +141,10 @@ public class Room {
         }
     }
 
+    /**
+     * Helper method for 'expandWall'.  Given a side of a room that we want to push out by one cell, this method
+     * determines which cells need to be converted to new floor.  It then returns those cells as a list of points.
+     */
     private ArrayList<Point> newFloorPoints(Side expansionSide) {
         ArrayList<Point> newFloor = new ArrayList<>();
         switch (expansionSide) {
@@ -141,6 +172,10 @@ public class Room {
         return newFloor;
     }
 
+    /**
+     * Helper method for 'hasSpaceToGrow' and 'expandWall'.  Given we want to expand a wall in a given direction, this
+     * method determines the points that we need to convert into a wall.
+     */
     private ArrayList<Point> newWallPoints(Side expansionSide) {
         ArrayList<Point> newWall = new ArrayList<>();
         switch (expansionSide) {
@@ -168,6 +203,10 @@ public class Room {
         return newWall;
     }
 
+    /**
+     * This is a helper method for 'growToRandomSize'.  When a room is initially created, it is 3x3 and has a single
+     * door.  After we've expanded the room to its final dimensions, we need to add doors to the other three sides.
+     */
     private void setRestOfDoors() {
         if (initialDoorSide != Side.LEFT) {
             ArrayList<Point> leftWallPoints = verticalPointsBetween(topLeft, new Point(topLeft.x(), bottomRight.y()));
@@ -202,8 +241,10 @@ public class Room {
         }
     }
 
-
-    // Exclusive of the end points
+    /**
+     * Given two points, this method returns all the points between those two points, inclusive of the endpoints.  Note
+     * that Point 'a' and Point 'b' need to share the same 'x' value.
+     */
     private ArrayList<Point> verticalPointsBetween(Point a, Point b) {
         ArrayList<Point> points = new ArrayList<>();
         Point topPoint;
@@ -221,7 +262,10 @@ public class Room {
         return points;
     }
 
-    // Exclusive of the end points
+    /**
+     * Given two points, this method returns all the points between those two points, inclusive of the endpoints.  Note
+     * that Point 'a' and Point 'b' need to share the same 'y' value.
+     */
     private ArrayList<Point> horizontalPointsBetween(Point a, Point b) {
         // TODO - there is probably a way to clean up these two 'points between' methods.
         ArrayList<Point> points = new ArrayList<>();
@@ -240,6 +284,10 @@ public class Room {
         return points;
     }
 
+    /**
+     * Helper method for 'hasSpaceToGrow'.  Given a list of points, this method determines if they are populated with
+     * 'Nothing' tiles or not.  If a single tile in the list is not a 'nothing' tile, this method returns false.
+     */
     private boolean areCellsUnoccupied(List<Point> cells) {
         for (Point cell : cells) {
             if (board.getCell(cell) != Tileset.NOTHING) {

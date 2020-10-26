@@ -7,13 +7,21 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * A board is a size.
+ * To start a game, you need a board.  Given a random number a board generator will generate a random board for you.
+ * This board will have a random number of rooms that are randomly sized.  Each room is connected to at least one other
+ * room via hallways.
  */
 public class BoardGenerator {
     private final Board board;
     private final ArrayList<Door> unusedDoors;
     Random rand;
 
+    /**
+     * Creates a randomly generated board.
+     * @param width width of the desired board.
+     * @param height height of the desired board.
+     * @param rand random integer used to seed a Random object.
+     */
     public BoardGenerator(int width, int height, Random rand) {
         this.rand = rand;
         this.board = new Board(height, width, Tileset.NOTHING);
@@ -45,6 +53,9 @@ public class BoardGenerator {
         }
     }
 
+    /**
+     * Returns the board object.
+     */
     public Board getBoard() {
         return board;
     }
@@ -69,8 +80,8 @@ public class BoardGenerator {
     }
 
     private boolean usablePlacementInstructions(RoomBuildPlans plans) {
-        // For now this just checks if all the points are on the board and empty.  Later I might need to also check to
-        // see if the door connects to another door.
+        // This just checks to see of the board has space to build the new room.  If there isn't space, it likely means
+        // that another room is in the way, or that the room wouldn't fit on the board.
         Point center = plans.location();
         for (int x = center.x() - 1; x < center.x() + 2; x++) {
             for (int y = center.y() + 1; y > center.y() - 2; y--) {

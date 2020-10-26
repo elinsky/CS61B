@@ -1,7 +1,7 @@
 package byow.Core.Input;
 
 /**
- * Created by hug.
+ * Influenced by hug.
  */
 import byow.InputDemo.InputSource;
 import edu.princeton.cs.algs4.StdDraw;

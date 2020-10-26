@@ -11,41 +11,41 @@ import java.util.Random;
  */
 public class BoardGenerator {
     private final Board board;
-    private final ArrayList<Door> unused_doors;
+    private final ArrayList<Door> unusedDoors;
     Random rand;
 
     public BoardGenerator(int width, int height, Random rand) {
         this.rand = rand;
         this.board = new Board(height, width, Tileset.NOTHING);
-        this.unused_doors = new ArrayList<>();
+        this.unusedDoors = new ArrayList<>();
 
         // Bootstrap the initial world generation process
         // Create first room
-        int rand_x = RandomUtils.uniform(rand, 4, width - 4);
-        int rand_y = RandomUtils.uniform(rand, 4, height - 4);
-        Point rand_start = new Point(rand_x, rand_y);
-        Point second_door_site = new Point(rand_start.x(), rand_start.y() + 2);
-        RoomBuildPlans initial_placement_instructions = new RoomBuildPlans(rand_start, Side.TOP, second_door_site);
-        Room initial_room = new Room(initial_placement_instructions, rand, board);
-        unused_doors.addAll(initial_room.get_doors());
+        int randX = RandomUtils.uniform(rand, 4, width - 4);
+        int randY = RandomUtils.uniform(rand, 4, height - 4);
+        Point randStart = new Point(randX, randY);
+        Point secondDoorSite = new Point(randStart.x(), randStart.y() + 2);
+        RoomBuildPlans initialPlacementInstructions = new RoomBuildPlans(randStart, Side.TOP, secondDoorSite);
+        Room initialRoom = new Room(initialPlacementInstructions, rand, board);
+        unusedDoors.addAll(initialRoom.getDoors());
 
         // Create second room
-        Door initial_door = initial_room.get_doors().remove(0);
-        RoomBuildPlans second_room_plan = initial_door.get_build_plans_for_neighbor();
-        Room second_room = new Room(second_room_plan, rand, this.board);
-        unused_doors.addAll(second_room.get_doors());
+        Door initialDoor = initialRoom.getDoors().remove(0);
+        RoomBuildPlans secondRoomPlan = initialDoor.getBuildPlansForNeighbor();
+        Room secondRoom = new Room(secondRoomPlan, rand, this.board);
+        unusedDoors.addAll(secondRoom.getDoors());
 
         // Let the rest of the board emerge
-        while (unused_doors.size() > 0) {
-            Door door_to_nowhere = this.get_random_door_to_build_off(rand);
-            RoomBuildPlans adjoining_room_plans = door_to_nowhere.get_build_plans_for_neighbor();
-            Room adjoining_room = new Room(adjoining_room_plans, rand, this.board);
-            unused_doors.addAll(adjoining_room.get_doors());
-            unused_doors.removeIf(x -> !usable_placement_instructions(x.get_build_plans_for_neighbor()));
+        while (unusedDoors.size() > 0) {
+            Door doorToNowhere = this.getRandomDoorToBuildOff(rand);
+            RoomBuildPlans adjoiningRoomPlans = doorToNowhere.getBuildPlansForNeighbor();
+            Room adjoiningRoom = new Room(adjoiningRoomPlans, rand, this.board);
+            unusedDoors.addAll(adjoiningRoom.getDoors());
+            unusedDoors.removeIf(x -> !usablePlacementInstructions(x.getBuildPlansForNeighbor()));
         }
     }
 
-    public Board get_board() {
+    public Board getBoard() {
         return board;
     }
 
@@ -55,27 +55,27 @@ public class BoardGenerator {
      *
      * @return Door on the map that doesn't have a neighbor.
      */
-    private Door get_random_door_to_build_off(Random rand) {
-        if (unused_doors.size() == 0) {
+    private Door getRandomDoorToBuildOff(Random rand) {
+        if (unusedDoors.size() == 0) {
             throw new RuntimeException("Ran out of usable doors");
         }
-        java.util.Collections.shuffle(unused_doors, rand);
-        Door unused_door = unused_doors.remove(0);
-        if (usable_placement_instructions(unused_door.get_build_plans_for_neighbor())) {
-            return unused_door;
+        java.util.Collections.shuffle(unusedDoors, rand);
+        Door unusedDoor = unusedDoors.remove(0);
+        if (usablePlacementInstructions(unusedDoor.getBuildPlansForNeighbor())) {
+            return unusedDoor;
         } else {
-            return get_random_door_to_build_off(rand);
+            return getRandomDoorToBuildOff(rand);
         }
     }
 
-    private boolean usable_placement_instructions(RoomBuildPlans plans) {
+    private boolean usablePlacementInstructions(RoomBuildPlans plans) {
         // For now this just checks if all the points are on the board and empty.  Later I might need to also check to
         // see if the door connects to another door.
         Point center = plans.location();
         for (int x = center.x() - 1; x < center.x() + 2; x++) {
             for (int y = center.y() + 1; y > center.y() - 2; y--) {
                 Point cell = new Point(x, y);
-                if (!board.is_valid_point(cell) || board.get_cell(cell) != Tileset.NOTHING) {
+                if (!board.isValidPoint(cell) || board.getCell(cell) != Tileset.NOTHING) {
                     return false;
                 }
             }

@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Room {
-    protected Point initial_door_location; // This is the door created when the room is created.
-    protected Side initial_door_side;
-    protected Point initial_center;
-    protected Point top_left;
-    protected Point bottom_right;
+    protected Point initialDoorLocation; // This is the door created when the room is created.
+    protected Side initialDoorSide;
+    protected Point initialCenter;
+    protected Point topLeft;
+    protected Point bottomRight;
     protected ArrayList<Door> doors;
     protected Random rand;
     protected Board board;
@@ -21,24 +21,24 @@ public class Room {
     Room(RoomBuildPlans plans, Random rand, Board board) {
         this.rand = rand;
         this.board = board;
-        initial_door_side = plans.side_for_door();
-        initial_center = plans.location();
-        top_left = new Point(initial_center.x() - 1, initial_center.y() + 1);
-        bottom_right = new Point(initial_center.x() + 1, initial_center.y() - 1);
-        switch (initial_door_side) {
-            case TOP -> initial_door_location = new Point(initial_center.x(), initial_center.y() + 1);
-            case BOTTOM -> initial_door_location = new Point(initial_center.x(), initial_center.y() - 1);
-            case LEFT -> initial_door_location = new Point(initial_center.x() - 1, initial_center.y());
-            case RIGHT -> initial_door_location = new Point(initial_center.x() + 1, initial_center.y());
+        initialDoorSide = plans.sideForDoor();
+        initialCenter = plans.location();
+        topLeft = new Point(initialCenter.x() - 1, initialCenter.y() + 1);
+        bottomRight = new Point(initialCenter.x() + 1, initialCenter.y() - 1);
+        switch (initialDoorSide) {
+            case TOP -> initialDoorLocation = new Point(initialCenter.x(), initialCenter.y() + 1);
+            case BOTTOM -> initialDoorLocation = new Point(initialCenter.x(), initialCenter.y() - 1);
+            case LEFT -> initialDoorLocation = new Point(initialCenter.x() - 1, initialCenter.y());
+            case RIGHT -> initialDoorLocation = new Point(initialCenter.x() + 1, initialCenter.y());
         }
-        draw_room(plans);
+        drawRoom(plans);
         this.doors = new ArrayList<>();
-        Door first_door = new Door(initial_door_location, true, initial_door_side, board);
-        doors.add(first_door);
-        grow_to_random_size(rand);
+        Door firstDoor = new Door(initialDoorLocation, true, initialDoorSide, board);
+        doors.add(firstDoor);
+        growToRandomSize(rand);
     }
 
-    public ArrayList<Door> get_doors() {
+    public ArrayList<Door> getDoors() {
         return doors;
     }
 
@@ -51,198 +51,198 @@ public class Room {
      * After the room has reached its final size, doors will be placed on the 3 sides without doors.  These doors will
      * be closed by default.
      */
-    private void grow_to_random_size(Random rand) {
+    private void growToRandomSize(Random rand) {
         double PROB_GROW = 0.90;
         while (RandomUtils.uniform(rand) < PROB_GROW) {
-            Side grow_side = SideUtilities.random_side_except(rand, initial_door_side);
-            if (space_to_grow(grow_side)) {
-                expand_wall(grow_side);
+            Side growSide = SideUtilities.randomSideExcept(rand, initialDoorSide);
+            if (hasSpaceToGrow(growSide)) {
+                expandWall(growSide);
             }
         }
-        set_rest_of_doors();
+        setRestOfDoors();
     }
 
-    private void draw_room(RoomBuildPlans plans) {
+    private void drawRoom(RoomBuildPlans plans) {
         Point center = plans.location();
-        Point existing_door_to_open = plans.existing_door_location();
-        Point top_left = new Point(center.x() - 1, center.y() + 1);
-        Point bottom_right = new Point(center.x() + 1, center.y() - 1);
-        Point new_door = switch (plans.side_for_door()) {
+        Point existingDoorToOpen = plans.existingDoorLocation();
+        Point topLeft = new Point(center.x() - 1, center.y() + 1);
+        Point bottomRight = new Point(center.x() + 1, center.y() - 1);
+        Point newDoor = switch (plans.sideForDoor()) {
             case TOP -> new Point(center.x(), center.y() + 1);
             case BOTTOM -> new Point(center.x(), center.y() - 1);
             case LEFT -> new Point(center.x() - 1, center.y());
             case RIGHT -> new Point(center.x() + 1, center.y());
         };
 
-        draw_rectangle(top_left, bottom_right, Tileset.WALL);
-        board.set_cell(center, Tileset.FLOOR);
-        board.set_cell(new_door, Tileset.FLOOR);
-        board.set_cell(existing_door_to_open, Tileset.FLOOR);
+        drawRectangle(topLeft, bottomRight, Tileset.WALL);
+        board.setCell(center, Tileset.FLOOR);
+        board.setCell(newDoor, Tileset.FLOOR);
+        board.setCell(existingDoorToOpen, Tileset.FLOOR);
     }
 
-    private void draw_rectangle(Point top_left, Point bottom_right, TETile type) {
-        for (int x = top_left.x(); x <= bottom_right.x(); x++) {
-            for (int y = top_left.y(); y >= bottom_right.y(); y--) {
-                board.set_cell(new Point(x, y), type);
+    private void drawRectangle(Point topLeft, Point bottomRight, TETile type) {
+        for (int x = topLeft.x(); x <= bottomRight.x(); x++) {
+            for (int y = topLeft.y(); y >= bottomRight.y(); y--) {
+                board.setCell(new Point(x, y), type);
             }
         }
     }
 
-    private boolean space_to_grow(Side grow_side) {
-        ArrayList<Point> new_wall = new_wall_points(grow_side);
-        return board.are_valid_points(new_wall) && are_cells_unoccupied(new_wall);
+    private boolean hasSpaceToGrow(Side growSide) {
+        ArrayList<Point> newWall = newWallPoints(growSide);
+        return board.areValidPoints(newWall) && areCellsUnoccupied(newWall);
     }
 
-    private void expand_wall(Side grow_side) {
-        ArrayList<Point> new_wall = new_wall_points(grow_side);
-        for (Point wall : new_wall) {
-            board.set_cell(wall, Tileset.WALL);
+    private void expandWall(Side growSide) {
+        ArrayList<Point> newWall = newWallPoints(growSide);
+        for (Point wall : newWall) {
+            board.setCell(wall, Tileset.WALL);
         }
-        ArrayList<Point> new_floor = new_floor_points(grow_side);
-        for (Point floor : new_floor) {
-            board.set_cell(floor, Tileset.FLOOR);
+        ArrayList<Point> newFloor = newFloorPoints(growSide);
+        for (Point floor : newFloor) {
+            board.setCell(floor, Tileset.FLOOR);
         }
-        update_room_dimensions(grow_side);
+        updateRoomDimensions(growSide);
     }
 
-    private void update_room_dimensions(Side expansion_side) {
-        switch (expansion_side) {
-            case TOP -> top_left = new Point(top_left.x(), top_left.y() + 1);
-            case BOTTOM -> bottom_right = new Point(bottom_right.x(), bottom_right.y() - 1);
-            case LEFT -> top_left = new Point(top_left.x() - 1, top_left.y());
-            case RIGHT -> bottom_right = new Point(bottom_right.x() + 1, bottom_right.y());
+    private void updateRoomDimensions(Side expansionSide) {
+        switch (expansionSide) {
+            case TOP -> topLeft = new Point(topLeft.x(), topLeft.y() + 1);
+            case BOTTOM -> bottomRight = new Point(bottomRight.x(), bottomRight.y() - 1);
+            case LEFT -> topLeft = new Point(topLeft.x() - 1, topLeft.y());
+            case RIGHT -> bottomRight = new Point(bottomRight.x() + 1, bottomRight.y());
         }
     }
 
-    private ArrayList<Point> new_floor_points(Side expansion_side) {
-        ArrayList<Point> new_floor = new ArrayList<>();
-        switch (expansion_side) {
+    private ArrayList<Point> newFloorPoints(Side expansionSide) {
+        ArrayList<Point> newFloor = new ArrayList<>();
+        switch (expansionSide) {
             case TOP -> {
-                for (int x = top_left.x() + 1; x < bottom_right.x(); x++) {
-                    new_floor.add(new Point(x, top_left.y()));
+                for (int x = topLeft.x() + 1; x < bottomRight.x(); x++) {
+                    newFloor.add(new Point(x, topLeft.y()));
                 }
             }
             case BOTTOM -> {
-                for (int x = top_left.x() + 1; x < bottom_right.x(); x++) {
-                    new_floor.add(new Point(x, bottom_right.y()));
+                for (int x = topLeft.x() + 1; x < bottomRight.x(); x++) {
+                    newFloor.add(new Point(x, bottomRight.y()));
                 }
             }
             case LEFT -> {
-                for (int y = top_left.y() - 1; y > bottom_right.y(); y--) {
-                    new_floor.add(new Point(top_left.x(), y));
+                for (int y = topLeft.y() - 1; y > bottomRight.y(); y--) {
+                    newFloor.add(new Point(topLeft.x(), y));
                 }
             }
             case RIGHT -> {
-                for (int y = top_left.y() - 1; y > bottom_right.y(); y--) {
-                    new_floor.add(new Point(bottom_right.x(), y));
+                for (int y = topLeft.y() - 1; y > bottomRight.y(); y--) {
+                    newFloor.add(new Point(bottomRight.x(), y));
                 }
             }
         }
-        return new_floor;
+        return newFloor;
     }
 
-    private ArrayList<Point> new_wall_points(Side expansion_side) {
-        ArrayList<Point> new_wall = new ArrayList<>();
-        switch (expansion_side) {
+    private ArrayList<Point> newWallPoints(Side expansionSide) {
+        ArrayList<Point> newWall = new ArrayList<>();
+        switch (expansionSide) {
             case TOP -> {
-                for (int x = top_left.x(); x <= bottom_right.x(); x++) {
-                    new_wall.add(new Point(x, top_left.y() + 1));
+                for (int x = topLeft.x(); x <= bottomRight.x(); x++) {
+                    newWall.add(new Point(x, topLeft.y() + 1));
                 }
             }
             case BOTTOM -> {
-                for (int x = top_left.x(); x <= bottom_right.x(); x++) {
-                    new_wall.add(new Point(x, bottom_right.y() - 1));
+                for (int x = topLeft.x(); x <= bottomRight.x(); x++) {
+                    newWall.add(new Point(x, bottomRight.y() - 1));
                 }
             }
             case LEFT -> {
-                for (int y = top_left.y(); y >= bottom_right.y(); y--) {
-                    new_wall.add(new Point(top_left.x() - 1, y));
+                for (int y = topLeft.y(); y >= bottomRight.y(); y--) {
+                    newWall.add(new Point(topLeft.x() - 1, y));
                 }
             }
             case RIGHT -> {
-                for (int y = top_left.y(); y >= bottom_right.y(); y--) {
-                    new_wall.add(new Point(bottom_right.x() + 1, y));
+                for (int y = topLeft.y(); y >= bottomRight.y(); y--) {
+                    newWall.add(new Point(bottomRight.x() + 1, y));
                 }
             }
         }
-        return new_wall;
+        return newWall;
     }
 
-    private void set_rest_of_doors() {
-        if (initial_door_side != Side.LEFT) {
-            ArrayList<Point> left_wall_points = vertical_points_between(top_left, new Point(top_left.x(), bottom_right.y()));
-            java.util.Collections.shuffle(left_wall_points, rand);
-            Point left_wall_point = left_wall_points.remove(0);
-            Door left_door = new Door(left_wall_point, false, Side.LEFT, board);
-            doors.add(left_door);
+    private void setRestOfDoors() {
+        if (initialDoorSide != Side.LEFT) {
+            ArrayList<Point> leftWallPoints = verticalPointsBetween(topLeft, new Point(topLeft.x(), bottomRight.y()));
+            java.util.Collections.shuffle(leftWallPoints, rand);
+            Point leftWallPoint = leftWallPoints.remove(0);
+            Door leftDoor = new Door(leftWallPoint, false, Side.LEFT, board);
+            doors.add(leftDoor);
         }
 
-        if (initial_door_side != Side.RIGHT) {
-            ArrayList<Point> right_wall_points = vertical_points_between(new Point(bottom_right.x(),top_left.y()), bottom_right);
-            java.util.Collections.shuffle(right_wall_points, rand);
-            Point right_wall_point = right_wall_points.remove(0);
-            Door right_door = new Door(right_wall_point, false, Side.RIGHT, board);
-            doors.add(right_door);
+        if (initialDoorSide != Side.RIGHT) {
+            ArrayList<Point> rightWallPoints = verticalPointsBetween(new Point(bottomRight.x(), topLeft.y()), bottomRight);
+            java.util.Collections.shuffle(rightWallPoints, rand);
+            Point rightWallPoint = rightWallPoints.remove(0);
+            Door rightDoor = new Door(rightWallPoint, false, Side.RIGHT, board);
+            doors.add(rightDoor);
         }
 
-        if (initial_door_side != Side.TOP) {
-            ArrayList<Point> top_wall_points = horizontal_points_between(top_left, new Point(bottom_right.x(), top_left.y()));
-            java.util.Collections.shuffle(top_wall_points, rand);
-            Point top_wall_point = top_wall_points.remove(0);
-            Door top_door = new Door(top_wall_point, false, Side.TOP, board);
-            doors.add(top_door);
+        if (initialDoorSide != Side.TOP) {
+            ArrayList<Point> topWallPoints = horizontalPointsBetween(topLeft, new Point(bottomRight.x(), topLeft.y()));
+            java.util.Collections.shuffle(topWallPoints, rand);
+            Point topWallPoint = topWallPoints.remove(0);
+            Door topDoor = new Door(topWallPoint, false, Side.TOP, board);
+            doors.add(topDoor);
         }
 
-        if (initial_door_side != Side.BOTTOM) {
-            ArrayList<Point> bottom_wall_points = horizontal_points_between(new Point(top_left.x(), bottom_right.y()), bottom_right);
-            java.util.Collections.shuffle(bottom_wall_points, rand);
-            Point bottom_wall_point = bottom_wall_points.remove(0);
-            Door bottom_door = new Door(bottom_wall_point, false, Side.BOTTOM, board);
-            doors.add(bottom_door);
+        if (initialDoorSide != Side.BOTTOM) {
+            ArrayList<Point> bottomWallPoints = horizontalPointsBetween(new Point(topLeft.x(), bottomRight.y()), bottomRight);
+            java.util.Collections.shuffle(bottomWallPoints, rand);
+            Point bottomWallPoint = bottomWallPoints.remove(0);
+            Door bottomDoor = new Door(bottomWallPoint, false, Side.BOTTOM, board);
+            doors.add(bottomDoor);
         }
     }
 
 
     // Exclusive of the end points
-    private ArrayList<Point> vertical_points_between(Point a, Point b) {
+    private ArrayList<Point> verticalPointsBetween(Point a, Point b) {
         ArrayList<Point> points = new ArrayList<>();
-        Point top_point;
-        Point bottom_point;
+        Point topPoint;
+        Point bottomPoint;
         if (a.y() >= b.y()) {
-            top_point = a;
-            bottom_point = b;
+            topPoint = a;
+            bottomPoint = b;
         } else {
-            top_point = b;
-            bottom_point = a;
+            topPoint = b;
+            bottomPoint = a;
         }
-        for (int y = top_point.y() - 1; y > bottom_point.y(); y--) {
+        for (int y = topPoint.y() - 1; y > bottomPoint.y(); y--) {
             points.add(new Point(a.x(), y));
         }
         return points;
     }
 
     // Exclusive of the end points
-    private ArrayList<Point> horizontal_points_between(Point a, Point b) {
+    private ArrayList<Point> horizontalPointsBetween(Point a, Point b) {
         // TODO - there is probably a way to clean up these two 'points between' methods.
         ArrayList<Point> points = new ArrayList<>();
-        Point left_point;
-        Point right_point;
+        Point leftPoint;
+        Point rightPoint;
         if (a.x() <= b.x()) {
-            left_point = a;
-            right_point = b;
+            leftPoint = a;
+            rightPoint = b;
         } else {
-            left_point = b;
-            right_point = a;
+            leftPoint = b;
+            rightPoint = a;
         }
-        for (int x = left_point.x() + 1; x < right_point.x(); x++) {
+        for (int x = leftPoint.x() + 1; x < rightPoint.x(); x++) {
             points.add(new Point(x, a.y()));
         }
         return points;
     }
 
-    private boolean are_cells_unoccupied(List<Point> cells) {
+    private boolean areCellsUnoccupied(List<Point> cells) {
         for (Point cell : cells) {
-            if (board.get_cell(cell) != Tileset.NOTHING) {
+            if (board.getCell(cell) != Tileset.NOTHING) {
                 return false;
             }
         }

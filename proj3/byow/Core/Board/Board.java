@@ -1,10 +1,8 @@
 package byow.Core.Board;
 
 import byow.Core.Point;
-import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,51 +20,44 @@ public class Board implements Serializable {
 
 
 
-    public Board(int height, int width, TETile default_tile) {
+    public Board(int height, int width, TETile defaultTile) {
         this.height = height;
         this.width = width;
         this.board = new TETile[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                board[x][y] = default_tile;
+                board[x][y] = defaultTile;
             }
         }
-//        ter = new TERenderer();
-//        ter.initialize(height, width);
-//        ter.renderFrame(board);
     }
 
-//    public void render_frame() {
-//        ter.renderFrame(board);
-//    }
-
-    public TETile[][] get_board() {
+    public TETile[][] getBoard() {
         return board;
     }
 
-    public TETile get_cell(Point point) {
+    public TETile getCell(Point point) {
         return board[point.x()][point.y()];
     }
 
-    public void set_cell(Point point, TETile tile) {
+    public void setCell(Point point, TETile tile) {
         board[point.x()][point.y()] = tile;
     }
 
-    public int get_width() {
+    public int getWidth() {
         return width;
     }
 
-    public int get_height() {
+    public int getHeight() {
         return height;
     }
 
-    public boolean is_valid_point(Point point) {
+    public boolean isValidPoint(Point point) {
         return point.x() >= 0 && point.x() < width && point.y() >= 0 && point.y() < height;
     }
 
-    public boolean are_valid_points(List<Point> points) {
+    public boolean areValidPoints(List<Point> points) {
         for (Point point : points) {
-            if (!is_valid_point(point)) {
+            if (!isValidPoint(point)) {
                 return false;
             }
         }

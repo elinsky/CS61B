@@ -2,7 +2,6 @@ package byow.Core.Objects;
 
 import byow.Core.Board.Board;
 import byow.Core.Point;
-import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 import java.io.Serializable;
@@ -15,11 +14,11 @@ public class Coin implements Serializable {
     public Coin(Board board, Point location) {
         this.board = board;
         this.location = location;
-        board.set_cell(location, Tileset.COIN);
+        board.setCell(location, Tileset.COIN);
     }
 
     public void collect() {
-        board.set_cell(location, Tileset.AVATAR);
+        board.setCell(location, Tileset.AVATAR);
         location = null;
     }
 

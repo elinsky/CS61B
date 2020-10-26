@@ -6,7 +6,6 @@ import byow.Core.Point;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -14,7 +13,7 @@ public abstract class Sprite implements Serializable {
     private Point location;
     private final Board board;
     protected TETile shape;
-    protected ArrayList<TETile> traversable_tiles;
+    protected ArrayList<TETile> traversableTiles;
 
     // A sprite is a character on the board.
     public Sprite(Board board, Point location) {
@@ -22,10 +21,10 @@ public abstract class Sprite implements Serializable {
         this.location = location;
     }
 
-    abstract public void take_turn();
+    abstract public void takeTurn();
 
-    public ArrayList<TETile> getTraversable_tiles() {
-        return traversable_tiles;
+    public ArrayList<TETile> getTraversableTiles() {
+        return traversableTiles;
     }
 
     // Sprites can only move to other floor cells.
@@ -38,25 +37,14 @@ public abstract class Sprite implements Serializable {
             case RIGHT -> move = new Point(location.x() + 1, location.y());
             default -> move = location;
         }
-        if (ObjectUtils.is_tile_traversable(move, board, traversable_tiles)) {
-            board.set_cell(location, Tileset.FLOOR);
+        if (ObjectUtils.isTileTraversable(move, board, traversableTiles)) {
+            board.setCell(location, Tileset.FLOOR);
             location = move;
-            board.set_cell(location, shape);
+            board.setCell(location, shape);
         }
     }
 
     public Point location() {
         return location;
     }
-
-//    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-//        // TODO
-//    }
-//
-//    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-//        // TODO
-//    }
-//    private void readObjectNoData() throws ObjectStreamException {
-//        // TODO
-//    }
 }

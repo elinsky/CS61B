@@ -3,7 +3,7 @@ package byow.Core.Input;
 import byow.InputDemo.InputSource;
 
 /**
- * Created by hug.
+ * Influenced by hug.
  */
 public class StringInputDevice implements InputSource {
     private String input;

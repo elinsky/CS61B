@@ -6,7 +6,7 @@ public class Door {
     private final Point position;
     private final Side side;
 
-    public Door(Point position, boolean is_open, Side side, Board board) {
+    public Door(Point position, boolean isOpen, Side side, Board board) {
         // The door class is dumb.  It doesn't know anything about its neighbors.
         this.position = position;
         this.side = side;
@@ -17,28 +17,28 @@ public class Door {
      * hallway that connects to this door.
      * @return Build Instructions object = location for area + side that the door goes on.
      */
-    public RoomBuildPlans get_build_plans_for_neighbor() {
-        Point center_of_new_build_site;
-        Side side_of_new_door;
+    public RoomBuildPlans getBuildPlansForNeighbor() {
+        Point centerOfNewBuildSite;
+        Side sideOfNewDoor;
         switch (side) {
             case TOP -> {
-                center_of_new_build_site = new Point(position.x(), position.y() + 2);
-                side_of_new_door = Side.BOTTOM;
+                centerOfNewBuildSite = new Point(position.x(), position.y() + 2);
+                sideOfNewDoor = Side.BOTTOM;
             }
             case BOTTOM -> {
-                center_of_new_build_site = new Point(position.x(), position.y() - 2);
-                side_of_new_door = Side.TOP;
+                centerOfNewBuildSite = new Point(position.x(), position.y() - 2);
+                sideOfNewDoor = Side.TOP;
             }
             case LEFT -> {
-                center_of_new_build_site = new Point(position.x() - 2, position.y());
-                side_of_new_door = Side.RIGHT;
+                centerOfNewBuildSite = new Point(position.x() - 2, position.y());
+                sideOfNewDoor = Side.RIGHT;
             }
             case RIGHT -> {
-                center_of_new_build_site = new Point(position.x() + 2, position.y());
-                side_of_new_door = Side.LEFT;
+                centerOfNewBuildSite = new Point(position.x() + 2, position.y());
+                sideOfNewDoor = Side.LEFT;
             }
             default -> throw new RuntimeException("unrecognized side " + side);
         }
-        return new RoomBuildPlans(center_of_new_build_site, side_of_new_door, position);
+        return new RoomBuildPlans(centerOfNewBuildSite, sideOfNewDoor, position);
     }
 }

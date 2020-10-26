@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class SideUtilities {
 
-    public static Side random_side_except(Random rand, Side exclude) {
+    public static Side randomSideExcept(Random rand, Side exclude) {
         Side choice =  switch (RandomUtils.uniform(rand, 4)) {
             case 0 -> Side.TOP;
             case 1 -> Side.BOTTOM;
@@ -17,7 +17,7 @@ public class SideUtilities {
         if (choice != exclude) {
             return choice;
         } else {
-            return random_side_except(rand, exclude);
+            return randomSideExcept(rand, exclude);
         }
     }
 }

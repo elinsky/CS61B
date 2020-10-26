@@ -2,11 +2,9 @@ package byow.Core.Objects;
 
 import byow.Core.Board.Board;
 import byow.Core.Board.Side;
-import byow.Core.Objects.Sprite;
 import byow.Core.Point;
 import byow.TileEngine.Tileset;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -14,12 +12,12 @@ public class Player extends Sprite implements Serializable {
 
     public Player(Board board, Point location) {
         super(board, location);
-        this.traversable_tiles = new ArrayList<>();
-        traversable_tiles.add(Tileset.FLOOR);
-        traversable_tiles.add(Tileset.COIN);
-        traversable_tiles.add(Tileset.BLUE_GHOST);
+        this.traversableTiles = new ArrayList<>();
+        traversableTiles.add(Tileset.FLOOR);
+        traversableTiles.add(Tileset.COIN);
+        traversableTiles.add(Tileset.BLUE_GHOST);
         this.shape = Tileset.AVATAR;
-        board.set_cell(location, shape);
+        board.setCell(location, shape);
     }
 
     public void move(char key) {
@@ -32,14 +30,7 @@ public class Player extends Sprite implements Serializable {
     }
 
     @Override
-    public void take_turn() {
+    public void takeTurn() {
         // TODO - figure out what to do with this method
-//        String key = KeyListener.get_keypress(1);
-//        switch (key) {
-//            case "w" -> move(Side.TOP);
-//            case "a" -> move(Side.LEFT);
-//            case "s" -> move(Side.BOTTOM);
-//            case "d" -> move(Side.RIGHT);
-//        }
     }
 }

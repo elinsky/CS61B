@@ -22,8 +22,8 @@ public class Engine {
     /* Feel free to change the width and height. */
     private static final int WIDTH = 80;
     private static final int HEIGHT = 60;
-    private boolean game_active = true;
-    private String game_state = "menu";
+    private boolean isGameActive = true;
+    private String gameState = "menu";
     private Player player;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Coin> coins = new ArrayList<>();
@@ -36,28 +36,28 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
-        display_menu();
-        KeyboardInputSource input_source = new KeyboardInputSource();
+        displayMenu();
+        KeyboardInputSource inputSource = new KeyboardInputSource();
 
-        while (game_active) {
-            if (input_source.possibleNextInput()) {
-                char key = input_source.getNextKey();
-                process_key(key);
+        while (isGameActive) {
+            if (inputSource.possibleNextInput()) {
+                char key = inputSource.getNextKey();
+                processKey(key);
             }
-            process_mouse((int) mouseX(), (int) mouseY());
+            processMouse((int) mouseX(), (int) mouseY());
         }
-        end_game(game_state);
+        endGame(gameState);
     }
 
-    private void process_mouse(int x, int y) {
-        if (game_state.equals("play")) {
-            Point mouse_point = new Point(x, y);
-            if (!board.is_valid_point(mouse_point)) {
+    private void processMouse(int x, int y) {
+        if (gameState.equals("play")) {
+            Point mousePoint = new Point(x, y);
+            if (!board.isValidPoint(mousePoint)) {
                 return;
             }
-            TETile hover = board.get_cell(mouse_point);
-            String cell_description = hover.description();
-            ter.renderFrame(board.get_board(), cell_description);
+            TETile hover = board.getCell(mousePoint);
+            String cellDescription = hover.description();
+            ter.renderFrame(board.getBoard(), cellDescription);
         }
     }
 
@@ -89,65 +89,65 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
-        StringInputDevice input_device = new StringInputDevice(input);
-        while (input_device.possibleNextInput()) {
-            char key = input_device.getNextKey();
-            process_key(key);
+        StringInputDevice inputDevice = new StringInputDevice(input);
+        while (inputDevice.possibleNextInput()) {
+            char key = inputDevice.getNextKey();
+            processKey(key);
         }
-        return board.get_board();
+        return board.getBoard();
     }
 
     // return value indicates if the game continues
-    private void process_key(char key) {
-        switch (game_state) {
+    private void processKey(char key) {
+        switch (gameState) {
             case "menu":
                 switch (key) {
                     case 'N' -> {
-                        game_state = "select_seed";
-                        display_seed_menu();
+                        gameState = "select_seed";
+                        displaySeedMenu();
                     }
                     case 'L' -> {
-                        load_game();
-                        game_state = "play";
+                        loadGame();
+                        gameState = "play";
                     }
                     case 'Q' -> {
-                        game_active = false;
-                        game_state = "Goodbye";
+                        isGameActive = false;
+                        gameState = "Goodbye";
                     }
                 }
                 break;
             case "select_seed":
                 if (key == 'S') {
-                    game_state = "play";
-                    initialize_game();
+                    gameState = "play";
+                    initializeGame();
                 } else {
                     seed = seed * 10 + Character.getNumericValue(key);
-                    display_seed_menu();
+                    displaySeedMenu();
                 }
                 break;
             case "play":
                 if (key == ':') {
-                    game_state = "command mode";
+                    gameState = "command mode";
                 } else {
-                    play_round(key);
+                    playRound(key);
                 }
                 break;
             case "command mode":
                 if (key == 'Q') {
-                    save_game();
-                    game_active = false;
-                    game_state = "Save successful";
+                    saveGame();
+                    isGameActive = false;
+                    gameState = "Save successful";
                 } else {
-                    game_state = "play";
+                    gameState = "play";
                 }
             case "You Win":
             case "You Lose":
-                game_active = false;
+                isGameActive = false;
                 break;
         }
     }
 
-    private void load_game() {
+    private void loadGame() {
         File f = new File("./save_data");
         if (f.exists()) {
             try {
@@ -173,7 +173,7 @@ public class Engine {
         }
     }
 
-    private void save_game() {
+    private void saveGame() {
         File f = new File("./save_data");
         try {
             if (!f.exists()) {
@@ -197,7 +197,7 @@ public class Engine {
         }
     }
 
-    private void display_menu() {
+    private void displayMenu() {
         StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16); // Each cell is 16x16 pixels
         Font font = new Font("Monaco", Font.BOLD, 60);
         StdDraw.setFont(font);
@@ -221,7 +221,7 @@ public class Engine {
         StdDraw.pause(1);
     }
 
-    private void display_seed_menu() {
+    private void displaySeedMenu() {
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
         StdDraw.clear(Color.BLACK);
@@ -235,7 +235,7 @@ public class Engine {
         StdDraw.pause(1);
     }
 
-    private void end_game(String message) {
+    private void endGame(String message) {
         StdDraw.clear(Color.BLACK);
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
@@ -245,39 +245,39 @@ public class Engine {
         StdDraw.pause(1);
     }
 
-    private void add_objects_to_board(Board board, int num_enemies, int num_coins, Random rand) {
+    private void addObjectsToBoard(Board board, int numEnemies, int numCoins, Random rand) {
         ArrayList<TETile> floor = new ArrayList<>();
         floor.add(Tileset.FLOOR);
 
         // Add Enemies to Board
-        for (int i = 0; i < num_enemies; i++) {
-            enemies.add(new Enemy(board, ObjectUtils.random_cell(board, rand, floor)));
+        for (int i = 0; i < numEnemies; i++) {
+            enemies.add(new Enemy(board, ObjectUtils.randomCell(board, rand, floor)));
         }
 
         // Add Coins to Board
-        for (int i = 0; i < num_coins; i++) {
-            coins.add(new Coin(board, ObjectUtils.random_cell(board, rand, floor)));
+        for (int i = 0; i < numCoins; i++) {
+            coins.add(new Coin(board, ObjectUtils.randomCell(board, rand, floor)));
         }
     }
 
-    private void initialize_game() {
+    private void initializeGame() {
         rand = new Random(seed);
 
         // Initialize the board
         BoardGenerator boardGenerator = new BoardGenerator(WIDTH, HEIGHT - 2, rand);
-        board = boardGenerator.get_board();
+        board = boardGenerator.getBoard();
         ter.initialize(WIDTH, HEIGHT);
 
         // Add player, enemies, and coins to board
         ArrayList<TETile> floor = new ArrayList<>();
         floor.add(Tileset.FLOOR);
-        player = new Player(board, ObjectUtils.random_cell(board, rand, floor));
-        add_objects_to_board(board, 3, 3, rand);
+        player = new Player(board, ObjectUtils.randomCell(board, rand, floor));
+        addObjectsToBoard(board, 3, 3, rand);
 
-        ter.renderFrame(board.get_board(), "");
+        ter.renderFrame(board.getBoard(), "");
     }
 
-    private void play_round(char key) {
+    private void playRound(char key) {
         // Player takes turn
         player.move(key);
 
@@ -294,21 +294,21 @@ public class Engine {
         // Check to see if player died
         for (Enemy enemy: enemies)
             if (player.location().equals(enemy.location())) {
-                game_state = "You Lose";
+                gameState = "You Lose";
             }
 
         // Check for player win
         if (coins.size() == 0) {
-            game_state = "You Win";
+            gameState = "You Win";
         }
 
         // Enemies take turns
         for (Enemy enemy : enemies) {
-            enemy.take_turn();
+            enemy.takeTurn();
             if (enemy.location().equals(player.location())) {
-                game_state = "You Lose";
+                gameState = "You Lose";
             }
         }
-        ter.renderFrame(board.get_board(), "");
+        ter.renderFrame(board.getBoard(), "");
     }
 }

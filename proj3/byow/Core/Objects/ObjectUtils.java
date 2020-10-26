@@ -10,24 +10,22 @@ import java.util.Random;
 
 public class ObjectUtils {
 
-    public static Point random_cell(Board board, Random rand, ArrayList<TETile> valid_tile_types) {
-        int x = RandomUtils.uniform(rand, 0, board.get_width());
-        int y = RandomUtils.uniform(rand, 0, board.get_height());
+    public static Point randomCell(Board board, Random rand, ArrayList<TETile> validTileTypes) {
+        int x = RandomUtils.uniform(rand, 0, board.getWidth());
+        int y = RandomUtils.uniform(rand, 0, board.getHeight());
         Point loc = new Point(x, y);
-        while (!is_tile_traversable(loc, board, valid_tile_types)) {
-            x = RandomUtils.uniform(rand, 0, board.get_width());
-            y = RandomUtils.uniform(rand, 0, board.get_height());
+        while (!isTileTraversable(loc, board, validTileTypes)) {
+            x = RandomUtils.uniform(rand, 0, board.getWidth());
+            y = RandomUtils.uniform(rand, 0, board.getHeight());
             loc = new Point(x, y);
         }
         return loc;
-
-
     }
 
-    public static boolean is_tile_traversable(Point desired_destination, Board board, ArrayList<TETile> traversable_tiles) {
-        TETile destination_tile = board.get_cell(desired_destination);
-        for (TETile traversable_tile : traversable_tiles) {
-            if (destination_tile.equals(traversable_tile)) {
+    public static boolean isTileTraversable(Point desiredDestination, Board board, ArrayList<TETile> traversableTiles) {
+        TETile destinationTile = board.getCell(desiredDestination);
+        for (TETile traversableTile : traversableTiles) {
+            if (destinationTile.equals(traversableTile)) {
                 return true;
             }
         }

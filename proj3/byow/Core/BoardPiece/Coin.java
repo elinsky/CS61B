@@ -1,4 +1,4 @@
-package byow.Core.Objects;
+package byow.Core.BoardPiece;
 
 import byow.Core.Board.Board;
 import byow.Core.Point;

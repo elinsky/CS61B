@@ -1,4 +1,4 @@
-package byow.Core.Objects;
+package byow.Core.BoardPiece;
 
 import byow.Core.Board.Board;
 import byow.Core.Board.Side;
@@ -7,7 +7,6 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -42,7 +41,7 @@ public abstract class Sprite implements Serializable {
             case RIGHT -> move = new Point(location.x() + 1, location.y());
             default -> move = location;
         }
-        if (ObjectUtils.isTileTraversable(move, board, traversableTiles)) {
+        if (BoardPieceUtils.isTileTraversable(move, board, traversableTiles)) {
             board.setCell(location, Tileset.FLOOR);
             location = move;
             board.setCell(location, shape);

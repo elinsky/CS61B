@@ -2,7 +2,7 @@ package byow.Core;
 
 import byow.Core.Board.Board;
 import byow.Core.Board.BoardGenerator;
-import byow.Core.Objects.*;
+import byow.Core.BoardPiece.*;
 import byow.Core.Input.KeyboardInputSource;
 import byow.Core.Input.StringInputDevice;
 import byow.TileEngine.TERenderer;
@@ -290,12 +290,12 @@ public class Engine {
 
         // Add Enemies to Board
         for (int i = 0; i < numEnemies; i++) {
-            enemies.add(new Enemy(board, ObjectUtils.randomCell(board, rand, validCells)));
+            enemies.add(new Enemy(board, BoardPieceUtils.randomCell(board, rand, validCells)));
         }
 
         // Add Coins to Board
         for (int i = 0; i < numCoins; i++) {
-            coins.add(new Coin(board, ObjectUtils.randomCell(board, rand, validCells)));
+            coins.add(new Coin(board, BoardPieceUtils.randomCell(board, rand, validCells)));
         }
     }
 
@@ -314,7 +314,7 @@ public class Engine {
         // Add player, enemies, and coins to board
         Set<TETile> validCalls = new HashSet<>();
         validCalls.add(Tileset.FLOOR);
-        player = new Player(board, ObjectUtils.randomCell(board, rand, validCalls));
+        player = new Player(board, BoardPieceUtils.randomCell(board, rand, validCalls));
         addObjectsToBoard(board, 3, 3, rand);
 
         ter.renderFrame(board.getBoard(), "");

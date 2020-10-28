@@ -1,15 +1,14 @@
-package byow.Core.Objects;
+package byow.Core.BoardPiece;
 
 import byow.Core.Board.Board;
 import byow.Core.Point;
 import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 
-public class ObjectUtils {
+public class BoardPieceUtils {
 
     /**
      * Given a board, a Random object, and a Set of valid tile types, this method will choose a random point on

@@ -52,7 +52,7 @@ public class Room {
     /**
      * Returns a list of doors that are attached to this room.
      */
-    public ArrayList<Door> getDoors() {
+    public List<Door> getDoors() {
         return doors;
     }
 
@@ -209,7 +209,7 @@ public class Room {
      */
     private void setRestOfDoors() {
         if (initialDoorSide != Side.LEFT) {
-            ArrayList<Point> leftWallPoints = verticalPointsBetween(topLeft, new Point(topLeft.x(), bottomRight.y()));
+            List<Point> leftWallPoints = verticalPointsBetween(topLeft, new Point(topLeft.x(), bottomRight.y()));
             java.util.Collections.shuffle(leftWallPoints, rand);
             Point leftWallPoint = leftWallPoints.remove(0);
             Door leftDoor = new Door(leftWallPoint, false, Side.LEFT, board);
@@ -217,7 +217,7 @@ public class Room {
         }
 
         if (initialDoorSide != Side.RIGHT) {
-            ArrayList<Point> rightWallPoints = verticalPointsBetween(new Point(bottomRight.x(), topLeft.y()), bottomRight);
+            List<Point> rightWallPoints = verticalPointsBetween(new Point(bottomRight.x(), topLeft.y()), bottomRight);
             java.util.Collections.shuffle(rightWallPoints, rand);
             Point rightWallPoint = rightWallPoints.remove(0);
             Door rightDoor = new Door(rightWallPoint, false, Side.RIGHT, board);
@@ -225,7 +225,7 @@ public class Room {
         }
 
         if (initialDoorSide != Side.TOP) {
-            ArrayList<Point> topWallPoints = horizontalPointsBetween(topLeft, new Point(bottomRight.x(), topLeft.y()));
+            List<Point> topWallPoints = horizontalPointsBetween(topLeft, new Point(bottomRight.x(), topLeft.y()));
             java.util.Collections.shuffle(topWallPoints, rand);
             Point topWallPoint = topWallPoints.remove(0);
             Door topDoor = new Door(topWallPoint, false, Side.TOP, board);
@@ -233,7 +233,7 @@ public class Room {
         }
 
         if (initialDoorSide != Side.BOTTOM) {
-            ArrayList<Point> bottomWallPoints = horizontalPointsBetween(new Point(topLeft.x(), bottomRight.y()), bottomRight);
+            List<Point> bottomWallPoints = horizontalPointsBetween(new Point(topLeft.x(), bottomRight.y()), bottomRight);
             java.util.Collections.shuffle(bottomWallPoints, rand);
             Point bottomWallPoint = bottomWallPoints.remove(0);
             Door bottomDoor = new Door(bottomWallPoint, false, Side.BOTTOM, board);
@@ -245,7 +245,7 @@ public class Room {
      * Given two points, this method returns all the points between those two points, inclusive of the endpoints.  Note
      * that Point 'a' and Point 'b' need to share the same 'x' value.
      */
-    private ArrayList<Point> verticalPointsBetween(Point a, Point b) {
+    private List<Point> verticalPointsBetween(Point a, Point b) {
         ArrayList<Point> points = new ArrayList<>();
         Point topPoint;
         Point bottomPoint;
@@ -266,7 +266,7 @@ public class Room {
      * Given two points, this method returns all the points between those two points, inclusive of the endpoints.  Note
      * that Point 'a' and Point 'b' need to share the same 'y' value.
      */
-    private ArrayList<Point> horizontalPointsBetween(Point a, Point b) {
+    private List<Point> horizontalPointsBetween(Point a, Point b) {
         // TODO - there is probably a way to clean up these two 'points between' methods.
         ArrayList<Point> points = new ArrayList<>();
         Point leftPoint;

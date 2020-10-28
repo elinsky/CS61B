@@ -1,5 +1,7 @@
-package byow.Core.Board;
+package byow.Core.Tests;
 
+import byow.Core.Board.Board;
+import byow.Core.Board.BoardGenerator;
 import byow.TileEngine.TERenderer;
 
 import java.util.Random;

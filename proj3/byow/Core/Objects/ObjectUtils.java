@@ -12,7 +12,7 @@ import java.util.Set;
 public class ObjectUtils {
 
     /**
-     * Given a board, a Random object, and an arrayList of valid tile types, this method will choose a random point on
+     * Given a board, a Random object, and a Set of valid tile types, this method will choose a random point on
      * the board.
      */
     public static Point randomCell(Board board, Random rand, Set<TETile> validTileTypes) {
@@ -28,7 +28,7 @@ public class ObjectUtils {
     }
 
     /**
-     * Given a point, a board, and a list of traversable tiles, this method will determine if that tile is in fact
+     * Given a point, a board, and a Set of traversable tiles, this method will determine if that tile is in fact
      * traversable.
      */
     public static boolean isTileTraversable(Point desiredDestination, Board board, Set<TETile> traversableTiles) {

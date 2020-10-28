@@ -13,8 +13,8 @@ public class BoardVisualTest {
         int WIDTH = 80;
         int HEIGHT = 50;
         Random rand = new Random(21);
-        BoardGenerator boardGenerator = new BoardGenerator(WIDTH, HEIGHT, rand);
-        Board board = boardGenerator.getBoard();
+        BoardGenerator boardGenerator = new BoardGenerator();
+        Board board = boardGenerator.getBoard(WIDTH, HEIGHT, rand);
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         ter.renderFrame(board.getBoard(), "");

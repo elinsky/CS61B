@@ -307,8 +307,8 @@ public class Engine {
         rand = new Random(seed);
 
         // Initialize the board
-        BoardGenerator boardGenerator = new BoardGenerator(WIDTH, HEIGHT - 2, rand);
-        board = boardGenerator.getBoard();
+        BoardGenerator boardGenerator = new BoardGenerator();
+        board = boardGenerator.getBoard(WIDTH, HEIGHT - 2, rand);
         ter.initialize(WIDTH, HEIGHT);
 
         // Add player, enemies, and coins to board

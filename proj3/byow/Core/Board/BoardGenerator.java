@@ -4,6 +4,7 @@ import byow.Core.*;
 import byow.TileEngine.Tileset;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -12,9 +13,12 @@ import java.util.Random;
  * room via hallways.
  */
 public class BoardGenerator {
-    private final Board board;
-    private final ArrayList<Door> unusedDoors;
-    Random rand;
+//    private final Board board;
+//    private final ArrayList<Door> unusedDoors;
+//    Random rand;
+
+    public BoardGenerator() {
+    }
 
     /**
      * Creates a randomly generated board.
@@ -22,10 +26,9 @@ public class BoardGenerator {
      * @param height height of the desired board.
      * @param rand random integer used to seed a Random object.
      */
-    public BoardGenerator(int width, int height, Random rand) {
-        this.rand = rand;
-        this.board = new Board(height, width, Tileset.NOTHING);
-        this.unusedDoors = new ArrayList<>();
+    public Board getBoard(int width, int height, Random rand) {
+        Board board = new Board(height, width, Tileset.NOTHING);
+        List<Door> unusedDoors = new ArrayList<>();
 
         // Bootstrap the initial world generation process
         // Create first room
@@ -40,46 +43,39 @@ public class BoardGenerator {
         // Create second room
         Door initialDoor = initialRoom.getDoors().remove(0);
         RoomBuildPlans secondRoomPlan = initialDoor.getBuildPlansForNeighbor();
-        Room secondRoom = new Room(secondRoomPlan, rand, this.board);
+        Room secondRoom = new Room(secondRoomPlan, rand, board);
         unusedDoors.addAll(secondRoom.getDoors());
 
         // Let the rest of the board emerge
         while (unusedDoors.size() > 0) {
-            Door doorToNowhere = this.getRandomDoorToBuildOff(rand);
+            Door doorToNowhere = getRandomDoorToBuildOff(rand, unusedDoors, board);
             RoomBuildPlans adjoiningRoomPlans = doorToNowhere.getBuildPlansForNeighbor();
-            Room adjoiningRoom = new Room(adjoiningRoomPlans, rand, this.board);
+            Room adjoiningRoom = new Room(adjoiningRoomPlans, rand, board);
             unusedDoors.addAll(adjoiningRoom.getDoors());
-            unusedDoors.removeIf(x -> !usablePlacementInstructions(x.getBuildPlansForNeighbor()));
+            unusedDoors.removeIf(x -> !usablePlacementInstructions(x.getBuildPlansForNeighbor(), board));
         }
-    }
 
-    /**
-     * Returns the board object.
-     */
-    public Board getBoard() {
         return board;
     }
 
     /**
      * This method will return a random door on the board that does not have a neighbor.  It will also only return a
      * door that has enough space nearby for a new room or hallway.
-     *
-     * @return Door on the map that doesn't have a neighbor.
      */
-    private Door getRandomDoorToBuildOff(Random rand) {
+    private Door getRandomDoorToBuildOff(Random rand, List<Door> unusedDoors, Board board) {
         if (unusedDoors.size() == 0) {
             throw new RuntimeException("Ran out of usable doors");
         }
         java.util.Collections.shuffle(unusedDoors, rand);
         Door unusedDoor = unusedDoors.remove(0);
-        if (usablePlacementInstructions(unusedDoor.getBuildPlansForNeighbor())) {
+        if (usablePlacementInstructions(unusedDoor.getBuildPlansForNeighbor(), board)) {
             return unusedDoor;
         } else {
-            return getRandomDoorToBuildOff(rand);
+            return getRandomDoorToBuildOff(rand, unusedDoors, board);
         }
     }
 
-    private boolean usablePlacementInstructions(RoomBuildPlans plans) {
+    private boolean usablePlacementInstructions(RoomBuildPlans plans, Board board) {
         // This just checks to see of the board has space to build the new room.  If there isn't space, it likely means
         // that another room is in the way, or that the room wouldn't fit on the board.
         Point center = plans.location();

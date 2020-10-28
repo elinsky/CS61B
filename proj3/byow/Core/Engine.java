@@ -331,7 +331,7 @@ public class Engine {
         player.move(key);
 
         // Check to see if player collected a coin
-        ArrayList<Coin> collected = new ArrayList<>();
+        HashSet<Coin> collected = new HashSet<>();
         for (Coin coin : coins) {
             if (player.location().equals(coin.location())) {
                 coin.collect();

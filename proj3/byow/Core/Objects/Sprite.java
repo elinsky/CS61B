@@ -8,6 +8,7 @@ import byow.TileEngine.Tileset;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * A sprite is a character on a game board.  Sprites can move around.  There are some tiles that sprites are allowed to
@@ -18,7 +19,7 @@ public abstract class Sprite implements Serializable {
     private Point location;
     private final Board board;
     protected TETile shape;
-    protected ArrayList<TETile> traversableTiles;
+    protected Set<TETile> traversableTiles;
 
     public Sprite(Board board, Point location) {
         this.board = board;
@@ -27,7 +28,7 @@ public abstract class Sprite implements Serializable {
 
     abstract public void takeTurn();
 
-    public ArrayList<TETile> getTraversableTiles() {
+    public Set<TETile> getTraversableTiles() {
         return traversableTiles;
     }
 

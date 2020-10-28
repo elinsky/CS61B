@@ -285,17 +285,17 @@ public class Engine {
      * @param rand Random object used to choose random locations for these objects.
      */
     private void addObjectsToBoard(Board board, int numEnemies, int numCoins, Random rand) {
-        ArrayList<TETile> floor = new ArrayList<>();
-        floor.add(Tileset.FLOOR);
+        Set<TETile> validCells = new HashSet<>();
+        validCells.add(Tileset.FLOOR);
 
         // Add Enemies to Board
         for (int i = 0; i < numEnemies; i++) {
-            enemies.add(new Enemy(board, ObjectUtils.randomCell(board, rand, floor)));
+            enemies.add(new Enemy(board, ObjectUtils.randomCell(board, rand, validCells)));
         }
 
         // Add Coins to Board
         for (int i = 0; i < numCoins; i++) {
-            coins.add(new Coin(board, ObjectUtils.randomCell(board, rand, floor)));
+            coins.add(new Coin(board, ObjectUtils.randomCell(board, rand, validCells)));
         }
     }
 
@@ -312,9 +312,9 @@ public class Engine {
         ter.initialize(WIDTH, HEIGHT);
 
         // Add player, enemies, and coins to board
-        ArrayList<TETile> floor = new ArrayList<>();
-        floor.add(Tileset.FLOOR);
-        player = new Player(board, ObjectUtils.randomCell(board, rand, floor));
+        Set<TETile> validCalls = new HashSet<>();
+        validCalls.add(Tileset.FLOOR);
+        player = new Player(board, ObjectUtils.randomCell(board, rand, validCalls));
         addObjectsToBoard(board, 3, 3, rand);
 
         ter.renderFrame(board.getBoard(), "");

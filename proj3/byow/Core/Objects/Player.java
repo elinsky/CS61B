@@ -6,7 +6,7 @@ import byow.Core.Point;
 import byow.TileEngine.Tileset;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * A player is a character on a game board.  It can be controlled by a human with a keyboard.  The player's goal is to
@@ -19,7 +19,7 @@ public class Player extends Sprite implements Serializable {
      */
     public Player(Board board, Point location) {
         super(board, location);
-        this.traversableTiles = new ArrayList<>();
+        this.traversableTiles = new HashSet<>();
         traversableTiles.add(Tileset.FLOOR);
         traversableTiles.add(Tileset.COIN);
         traversableTiles.add(Tileset.BLUE_GHOST);

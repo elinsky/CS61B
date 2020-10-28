@@ -7,7 +7,7 @@ import byow.Core.Point;
 import byow.TileEngine.Tileset;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -25,7 +25,7 @@ public class Enemy extends Sprite implements Serializable {
     public Enemy(Board board, Point location) {
         super(board, location);
         this.rand = new Random(21);
-        this.traversableTiles = new ArrayList<>();
+        this.traversableTiles = new HashSet<>();
         traversableTiles.add(Tileset.FLOOR);
         traversableTiles.add(Tileset.AVATAR);
         this.shape = Tileset.BLUE_GHOST;

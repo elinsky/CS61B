@@ -329,7 +329,6 @@ public class Engine {
      * This method ensures that all sprites (players and enemies) take a turn playing.  The method checks to see if
      * coins have been collected.  It checks to see if a player died.  And it checks for win and loss scenarios. After
      * the turn is over, the method will render the board.
-     * @param key
      */
     private void playRound(char key) {
         // Player takes turn

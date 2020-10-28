@@ -14,6 +14,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
+import static byow.Core.GameState.*;
 import static edu.princeton.cs.algs4.StdDraw.mouseX;
 import static edu.princeton.cs.algs4.StdDraw.mouseY;
 
@@ -30,7 +31,7 @@ public class Engine {
     private static final int WIDTH = 80;
     private static final int HEIGHT = 60;
     private boolean isGameActive = true;
-    private String gameState = "menu";
+    private GameState gameState = MENU;
     private Player player;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Coin> coins = new ArrayList<>();
@@ -53,7 +54,11 @@ public class Engine {
             }
             processMouse((int) mouseX(), (int) mouseY());
         }
-        endGame(gameState);
+        if (gameState == WIN) {
+            endGame("You Win");
+        } else {
+            endGame("You Lose");
+        }
     }
 
     /**
@@ -98,7 +103,7 @@ public class Engine {
      * of the cell at (x, y) on the heads up display at the top left of the game window.
      */
     private void processMouse(int x, int y) {
-        if (gameState.equals("play")) {
+        if (gameState == PLAY) {
             Point mousePoint = new Point(x, y);
             if (!board.isValidPoint(mousePoint)) {
                 return;
@@ -115,48 +120,48 @@ public class Engine {
      */
     private void processKey(char key) {
         switch (gameState) {
-            case "menu":
+            case MENU:
                 switch (key) {
                     case 'N' -> {
-                        gameState = "select_seed";
+                        gameState = SELECT_SEED;
                         displaySeedMenu();
                     }
                     case 'L' -> {
                         loadGame();
-                        gameState = "play";
+                        gameState = PLAY;
                     }
                     case 'Q' -> {
                         isGameActive = false;
-                        gameState = "Goodbye";
+                        gameState = GOODBYE;
                     }
                 }
                 break;
-            case "select_seed":
+            case SELECT_SEED:
                 if (key == 'S') {
-                    gameState = "play";
+                    gameState = PLAY;
                     initializeGame();
                 } else {
                     seed = seed * 10 + Character.getNumericValue(key);
                     displaySeedMenu();
                 }
                 break;
-            case "play":
+            case PLAY:
                 if (key == ':') {
-                    gameState = "command mode";
+                    gameState = COMMAND_MODE;
                 } else {
                     playRound(key);
                 }
                 break;
-            case "command mode":
+            case COMMAND_MODE:
                 if (key == 'Q') {
                     saveGame();
                     isGameActive = false;
-                    gameState = "Save successful";
+                    gameState = SUCCESSFUL_SAVE;
                 } else {
-                    gameState = "play";
+                    gameState = PLAY;
                 }
-            case "You Win":
-            case "You Lose":
+            case WIN:
+            case LOSE:
                 isGameActive = false;
                 break;
         }
@@ -343,19 +348,19 @@ public class Engine {
         // Check to see if player died
         for (Enemy enemy: enemies)
             if (player.location().equals(enemy.location())) {
-                gameState = "You Lose";
+                gameState = LOSE;
             }
 
         // Check for player win
         if (coins.size() == 0) {
-            gameState = "You Win";
+            gameState = WIN;
         }
 
         // Enemies take turns
         for (Enemy enemy : enemies) {
             enemy.takeTurn();
             if (enemy.location().equals(player.location())) {
-                gameState = "You Lose";
+                gameState = LOSE;
             }
         }
         ter.renderFrame(board.getBoard(), "");
